@@ -35,7 +35,7 @@ class BaseApi extends Controller
                 ];
                 echo \json_encode($arrs);exit;
              }else{
-                 if($user['status'] != 1){
+                 if($user['status'] != 2){
                     $arrs=[
                         'error_code'=>503,
                         'msg'=>"请先进行实名认证",

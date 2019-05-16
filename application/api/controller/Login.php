@@ -34,32 +34,34 @@ class Login extends Controller
             $data['openid']=$openid;
             $data['nickname']=\input('nickname');
             $data['image']=\input('image');
-            
-            $ret=db('user')->where(array('openid'=>$openid))->find();
+         
+            $ret=db('user')->where("openid",$openid)->find();
             if($ret['openid']){
-                $res=db("user")->where(array('openid'=>$openid))->update($data);
+
+                
+                db("user")->where("openid",$openid)->update($data);
 
                 //首次登陆赠送积分
                 $login_log=db("integ_log")->where(["uid"=>$ret['uid'],"type"=>1,"types"=>1])->whereTime("time","d")->find();
-
+            
                 if(empty($login_log)){
                     //查询登陆赠送积分
-
+                    
                     $integ=db("integ")->where("id",1)->find();
 
-                    $data['uid']=$ret['uid'];
-                    $data['integ']=$integ['integ'];
-                    $data['content']="登陆";
-                    $data['type']=1;
-                    $data['time']=time();
-                    $data['types']=1;
+                    $datas['uid']=$ret['uid'];
+                    $datas['integ']=$integ['integ'];
+                    $datas['content']="登陆";
+                    $datas['type']=1;
+                    $datas['time']=time();
+                    $datas['types']=1;
 
                     
                     // 启动事务
                     Db::startTrans();
                     try{
                         db("user")->where("uid",$ret['uid'])->setInc("integ",$integ['integ']);
-                        db("integ_log")->insert($data);
+                        db("integ_log")->insert($datas);
                         // 提交事务
                         Db::commit();    
                     } catch (\Exception $e) {
@@ -90,19 +92,19 @@ class Login extends Controller
 
                     $integ=db("integ")->where("id",1)->find();
 
-                    $data['uid']=$uid;
-                    $data['integ']=$integ['integ'];
-                    $data['content']="登陆";
-                    $data['type']=1;
-                    $data['time']=time();
-                    $data['types']=1;
+                    $dataa['uid']=$uid;
+                    $dataa['integ']=$integ['integ'];
+                    $dataa['content']="登陆";
+                    $dataa['type']=1;
+                    $dataa['time']=time();
+                    $dataa['types']=1;
 
                     
                     // 启动事务
                     Db::startTrans();
                     try{
                         db("user")->where("uid",$uid)->setInc("integ",$integ['integ']);
-                        db("integ_log")->insert($data);
+                        db("integ_log")->insert($dataa);
                         // 提交事务
                         Db::commit();    
                     } catch (\Exception $e) {

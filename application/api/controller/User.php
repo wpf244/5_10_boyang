@@ -849,7 +849,7 @@ class User extends BaseHome
             $re=db("analog_log")->where(["aid"=>$v['id'],"uid"=>$uid])->find();
 
             if($re){
-                if($re['status'] == 0){
+                if($re['status'] == 0 || $re['status'] == 1){
                     $res[$k]['statu']=1;//已经开始答题 未答题完毕
                 }else{
                     $res[$k]['statu']=2;
@@ -925,6 +925,9 @@ class User extends BaseHome
                  }
 
             }else{
+
+             //   db("analog_log")->where(["uid"=>$uid,"aid"=>$id])->setField("status",0);
+
                 $top['title']=$re['title'];
                 $top['times']=$re['times']*60;
 

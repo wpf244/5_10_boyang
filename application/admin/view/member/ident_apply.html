@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+{include file="public:header"}
+
+<body class="no-skin">
+<!--头部-->
+{include file="public:nav"}
+
+<div class="main-container ace-save-state" id="main-container">
+  <!--菜单-->
+  <script type="text/javascript">
+  try{ace.settings.loadState('main-container')}catch(e){}
+</script>
+
+{include file="public:left"}
+
+  <div class="main-content">
+    <div class="main-content-inner">
+      <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+        <ul class="breadcrumb">
+          <li>
+            <i class="ace-icon fa fa-home home-icon"></i>
+            <a href="{:url('Index/index')}">首页</a>
+          </li>
+        
+          <li class="active">已审核列表</li>
+        </ul><!-- /.breadcrumb -->
+
+      </div>
+
+      <div id="sidebar2" class="sidebar h-sidebar navbar-collapse collapse ace-save-state">
+        <ul class="nav nav-list header-nav" id="header-nav">
+            <li>
+                <a href="{:url('Member/ident')}">
+                  <o class="font12 {if condition='ACTION_NAME eq "ident" '} rigbg {/if}">待审核列表</o>
+                </a>
+              <b class="arrow"></b>
+            </li>
+            <li>
+              <a href="{:url('Member/ident_apply')}">
+                 <o class="font12 {if condition='ACTION_NAME eq "ident_apply" '} rigbg {/if}">已审核列表</o>                                                      
+                </a>
+              <b class="arrow"></b>
+            </li>
+
+            <li>
+                <a href="{:url('Member/ident_bo')}">
+                   <o class="font12 {if condition='ACTION_NAME eq "ident_bo" '} rigbg {/if}">已驳回列表</o>                                                      
+                  </a>
+                <b class="arrow"></b>
+              </li>
+
+           
+         
+            					
+        </ul>
+      </div>
+
+      <div class="page-content">
+        {include file="public:set"}
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="col-sm-10 col-sm-offset-1">
+              <div class="page-header">
+                <div class="row">
+                <div class="col-sm-4">
+                   
+                </div>
+
+                 <!-- <div class="col-sm-8 clearfix">
+                  <form class="form-inline pull-right" action="{:url('News/lister')}">
+                
+                    <div class="form-group">
+                      <div class="input-group">
+									<span class="input-group-addon">
+										<i class="ace-icon fa fa-check"></i>
+									</span>
+                        <input type="text" name="key"  class="form-control search-query" value="" placeholder="请输入需查询的关键字">
+                        <span class="input-group-btn">
+										<button type="submit" class="btn btn-info btn-sm ajax-search-form">
+											<span class="ace-icon fa fa-search icon-on-right bigger-120"></span> 搜索
+									</button>
+									</span>
+                      </div>
+                    </div>
+                  </form>
+                </div> -->
+                </div>
+              </div>
+              <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th class="center">
+                        <label class="pos-rel">
+                          <input type="checkbox" class="ace checkAll">
+                          <span class="lbl"></span>
+                        </label>
+                      </th>
+                  <th>ID</th>  
+                  <th>账户类型</th>              
+                  <th>用户账号</th>                               
+                  <th>真实姓名</th>
+                  <th>身份证号</th>
+                  <th>单位名称</th>
+                  <th>职务</th>
+                  <th>申请时间</th>
+                  <th style="border-right:#ddd solid 1px;">审核时间</th>
+                </tr>
+                </thead>
+                
+                <tbody>
+                {volist name="list" id="v"}
+                <tr class="ace-thumbnails">
+                    <td class="center"><label class="pos-rel">
+                        <input type="checkbox" class="ace check" value="{$v.uid}">
+                        <span class="lbl"></span>
+                      </label>
+                      </td>
+                  <td><span class="badge badge-grey">{$v.uid}</span></td>
+                  <td>
+                      {if condition="$v.type eq 0"}微信注册会员{/if}
+                      {if condition="$v.type eq 1"}手机号注册会员{/if}
+                    </td>
+                  <td>{$v.nickname} {$v.phone}</td>
+                  <td>{$v.username} </td>
+                  <td>{$v.idcode} </td>
+                  <td>{$v.company} </td>
+                  <td>{$v.job} </td>
+                 
+                  <td>
+                  {notempty name="$v.apply_time"}
+                    {$v.apply_time|date="Y-m-d H:i:s",###}
+                  {/notempty}
+                  </td>
+                  <td>
+                      {notempty name="$v.oper_time"}
+                      {$v.oper_time|date="Y-m-d H:i:s",###}
+                    {/notempty}
+                  </td>
+                </tr>
+                {/volist}
+                {empty name="list"}<tr><td colspan="15" class="text-center">暂无数据</td></tr>{/empty}
+                </tbody>
+               
+              </table>
+              <div class="text-center">
+                {$page}
+              </div>
+            </div>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.page-content -->
+    </div>
+  </div><!-- /.main-content -->
+
+{include file="public:footer"}
+
+<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+  <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+</a>
+</div><!-- /.main-container -->
+
+<script>
+  jQuery(function($) {
+    $('[data-rel=tooltip]').tooltip();
+
+    $( "#hide-option" ).tooltip({
+      hide: {
+        effect: "explode",
+        delay: 250
+      }
+    });
+
+    $(".del-btns").on(ace.click_event,function(){
+	var valarr = [];
+	var checkitem = $(".check:checked")
+    var len = checkitem.length;
+    if(len>0){
+    	for(let i = 0; i < len;i++){
+    		valarr.push(checkitem.eq(i).val())
+    	}
+      layer.confirm('是否通过审核?',{icon: 3},function (index) {
+        layer.close(index);
+        window.location.href="change_all/id/"+valarr;
+      });
+    }else{
+      layer.msg("请先选择数据");
+    }
+  });
+
+  $(".del-btn_s").on(ace.click_event,function(){
+	var valarr = [];
+	var checkitem = $(".check:checked")
+    var len = checkitem.length;
+    if(len>0){
+    	for(let i = 0; i < len;i++){
+    		valarr.push(checkitem.eq(i).val())
+    	}
+      layer.confirm('是否驳回?',{icon: 3},function (index) {
+        layer.close(index);
+        window.location.href="bo_all/id/"+valarr;
+      });
+    }else{
+      layer.msg("请先选择数据");
+    }
+  });
+
+  })
+</script>
+<script type="text/javascript">
+		function change(id){
+			layer.confirm('你确定通过审核吗？', {icon: 3}, function(index){
+		    layer.close(index);
+		    $.ajax({
+          type:"post",
+          url:"{:url('Member/change')}",
+          data:{id:id},
+          dataType:"text",
+          success:function(re)
+          {
+             if(re == 1){
+               layer.msg("操作成功");
+               setTimeout("location.reload()",2000);
+             }else{
+               layer.msg("操作失败");
+               setTimeout("location.reload()",2000);
+             }
+          }
+        })
+		  });
+	    }
+    </script>
+    
+    <script type="text/javascript">
+      function bo(id){
+        layer.confirm('你确定驳回吗？', {icon: 3}, function(index){
+          layer.close(index);
+          $.ajax({
+            type:"post",
+            url:"{:url('Member/bo')}",
+            data:{id:id},
+            dataType:"text",
+            success:function(re)
+            {
+              if(re == 1){
+               layer.msg("操作成功");
+               setTimeout("location.reload()",2000);
+             }else{
+               layer.msg("操作失败");
+               setTimeout("location.reload()",2000);
+             }
+            }
+          })
+        });
+        }
+      </script>
+
+
+
+  <script>
+  $("#change").click(function(){
+  	$("#sortForm").submit();
+  })
+
+  </script>
+</body>
+</html>

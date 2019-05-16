@@ -45,74 +45,71 @@
                                                 </div>
                                                 <div class="widget-body">
                                                     <div class="widget-main">
-                                                        <div class="form-group">
-                                                            <label class="col-sm-2 control-label no-padding-right" for="">推荐人</label>
-                                                            <div class="col-sm-10">
-                                                             <?php $pid=$re['pid']; $user=db("user")->where("uid=$pid")->find();?>
-                                                                <input class="form-control typeahead" type="text" name="pid"  value="{$user.u_name}"
-                                                                placeholder="请输入会员名，可为空">
+
+                                                            <div class="form-group">
+                                                                    <label class="col-sm-2 control-label no-padding-right" for="">所属单位</label>
+                                                                  <div class="col-sm-10">
+                                                                    <select class="form-control" name="company_id" >
+                                                                      {volist name="res" id="v"}
+                                                                      <option value="{$v.cid}" {if condition="$re.company_id eq $v.cid"}selected{/if} >{$v.cname}</option>
+                                                                   {/volist}
+                                                                    </select>
+                                                                  </div> 
                                                             </div>
-                                                        </div>
-                                                        <div class="form-group">
-                                                                <label class="col-sm-2 control-label no-padding-right" for="">等级</label>
-                                                              <div class="col-sm-10">
-                                                                <select class="form-control" name="level" >
-                                                                  
-                                                                  <option value="1" {if condition="$re.level eq 1"}selected{/if} >1</option>
-                                                                  <option value="2" {if condition="$re.level eq 2"}selected{/if} >2</option>
-                                                                  <option value="3" {if condition="$re.level eq 3"}selected{/if} >3</option>
-                                                                  <option value="4" {if condition="$re.level eq 4"}selected{/if} >4</option>
-                                                                  <option value="5" {if condition="$re.level eq 5"}selected{/if} >5</option>
-                                                                  <option value="6" {if condition="$re.level eq 6"}selected{/if} >6</option>
-                                                                </select>
-                                                              </div> 
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label class="col-sm-2 control-label no-padding-right" for="">会员名</label>
-                                                            <div class="col-sm-10">
-                                                                <input class="form-control" type="text" name="u_name" value="{$re.u_name}"
-                                                                placeholder="请输入会员名" required>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label class="col-sm-2 control-label no-padding-right" for="">登录密码</label>
-                                                            <div class="col-sm-10">
-                                                                <input class="form-control" type="text" name="u_pwd" placeholder="请输入登录密码">
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label class="col-sm-2 control-label no-padding-right" for="">二级密码</label>
-                                                            <div class="col-sm-10">
-                                                                <input class="form-control" type="text" placeholder="请输入二级密码" name="u_pwds">
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label class="col-sm-2 control-label no-padding-right" for="">手机号码</label>
-                                                            <div class="col-sm-10">
-                                                                <input class="form-control" type="text" placeholder="请输入手机号码" name="u_phone" value="{$re.u_phone}">
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label class="col-sm-2 control-label no-padding-right" for="">微信号</label>
-                                                            <div class="col-sm-10">
-                                                                <input class="form-control" type="text" placeholder="请输入微信号" name="u_wx" value="{$re.u_wx}">
-                                                            </div>
-                                                        </div>
 
                                                         <div class="form-group">
-                                                            <label class="col-sm-2 control-label no-padding-right" for="">支付宝号</label>
+                                                                <label class="col-sm-2 control-label no-padding-right" for="">职务</label>
+                                                                <div class="col-sm-10">
+                                                                    <input class="form-control" type="text" placeholder="请输入职务" name="job" value="{$re.job}" required >
+                                                                </div>
+                                                            </div>
+                                                      
+                                                        <div class="form-group">
+                                                            <label class="col-sm-2 control-label no-padding-right" for="">真实姓名</label>
                                                             <div class="col-sm-10">
-                                                                <input class="form-control" type="text" placeholder="请输入支付宝号" name="u_alipay" value="{$re.u_alipay}">
+                                                                <input class="form-control" type="text" name="username" value="{$re.username}" placeholder="请输入真实姓名" required>
                                                             </div>
                                                         </div>
-
                                                         <div class="form-group">
-                                                            <label class="col-sm-2 control-label no-padding-right" for="">是否激活</label>
-                                                            <label style="padding-top: 8px">
-                                                                <input name="u_status" class="ace ace-switch ace-switch-6" type="checkbox" {if condition="$re.u_status eq 1"}checked{/if} />
-                                                                <span class="lbl"></span>
-                                                              </label>
+                                                            <label class="col-sm-2 control-label no-padding-right" for="">身份证号</label>
+                                                            <div class="col-sm-10">
+                                                                <input class="form-control" type="text" name="idcode" placeholder="请输入身份证号" value="{$re.idcode}" required >
+                                                            </div>
                                                         </div>
+                                                     
+                                                        <div class="form-group">
+                         
+                                                                <label class="col-sm-2 control-label no-padding-right" for="">认证状态</label>
+                                                                <div class="col-sm-2">
+                                                                  <label style="padding-top: 8px">
+                                                                    <input name="status" class="ace ace-switch ace-switch-6" type="radio" value="0" {if condition="$re.status eq 0"}checked {/if} />
+                                                                    <span class="lbl">未认证</span>
+                                                                  </label>
+                                                                </div>
+                                                                <div class="col-sm-2">
+                                                                  <label style="padding-top: 8px">
+                                                                    <input name="status" class="ace ace-switch ace-switch-6" type="radio" value="1" {if condition="$re.status eq 1"}checked {/if} />
+                                                                    <span class="lbl">认证中</span>
+                                                                  </label>
+                                                                </div>
+
+                                                                <div class="col-sm-2">
+                                                                        <label style="padding-top: 8px">
+                                                                          <input name="status" class="ace ace-switch ace-switch-6" type="radio" value="2" {if condition="$re.status eq 2"}checked {/if} />
+                                                                          <span class="lbl">认证成功</span>
+                                                                        </label>
+                                                                      </div>
+
+                                                                      <div class="col-sm-2">
+                                                                            <label style="padding-top: 8px">
+                                                                              <input name="status" class="ace ace-switch ace-switch-6" type="radio" value="3" {if condition="$re.status eq 3"}checked {/if} />
+                                                                              <span class="lbl">认证驳回</span>
+                                                                            </label>
+                                                                          </div>
+
+                                                              </div>
+                                                       
+                                                       
                                                     </div>
                                                 </div>
                                             </div>
@@ -244,44 +241,7 @@
 
         });
     </script>
-   <script>
-    var substringMatcher = function(strs) {
-        return function findMatches(q, cb) {
-            var matches, substringRegex;
-         
-            // an array that will be populated with substring matches
-            matches = [];
-         
-            // regex used to determine if a string contains the substring `q`
-            substrRegex = new RegExp(q, 'i');
-         
-            // iterate through the pool of strings and for any string that
-            // contains the substring `q`, add it to the `matches` array
-            $.each(strs, function(i, str) {
-                if (substrRegex.test(str)) {
-                    // the typeahead jQuery plugin expects suggestions to a
-                    // JavaScript object, refer to typeahead docs for more info
-                    matches.push({ value: str });
-                }
-            });
-
-            cb(matches);
-        }
-     }
-    
-     var test = {$data};
-
-     $('input.typeahead').typeahead({
-        hint: true,
-        highlight: true,
-        minLength: 1
-     }, {
-        name: 'states',
-        displayKey: 'value',
-        source: substringMatcher(test),
-        limit: 10
-     });
-    </script> 
+  
 </body>
 
 </html>

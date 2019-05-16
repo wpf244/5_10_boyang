@@ -35,7 +35,10 @@
               <div class="page-header">
                 <div class="row">
                 <div class="col-sm-4">
-              
+                    <a class="btn btn-success btn-white btn-bold" href="{:url('Member/add')}">
+                        <i class="ace-icon fa fa-plus icon-only"></i>
+                        添加会员
+                    </a>
                 </div>
                 </div>
               </div>
@@ -43,10 +46,10 @@
                 <thead>
                 <tr>
                   <th>ID</th>           
-                  <th class="hidden-480">会员名</th>
-                  
-                  <th class="hidden-480">头像</th>
-                 
+                  <th class="hidden-480">会员账号</th>
+                  <th class="hidden-480">会员积分</th>
+                  <th class="hidden-480">会员类型</th> 
+                  <th class="hidden-480">认证状态</th> 
                   <th class="hidden-480">注册时间</th>
                   <th style="border-right:#ddd solid 1px;">操作</th>
                 </tr>
@@ -56,21 +59,27 @@
                 <tr class="ace-thumbnails">
               
                   <td><span class="badge badge-grey">{$v.uid}</span></td>
-                  <td>{$v.nickname}</td>
+                  <td>{$v.nickname}{$v.phone}</td>
                
                   <td class="ace-thumbnails hidden-480">
-                    <li><a href="{$v.image}" data-rel="colorbox">
-                      <img width="80" height="80" alt="150x150" src="{$v.image}"/>
-                      <div class="text">
-                        <div class="inner">点击放大</div>
-                      </div>
-                    </a></li>
+                    {$v.integ}
                   </td>
-                
+                  <td>
+                    {if condition="$v.type eq 0"}微信注册会员{/if}
+                    {if condition="$v.type eq 1"}手机号注册会员{/if}
+                  </td>
+                  <td>
+                    {if condition="$v.status eq 0"}未认证{/if}
+                    {if condition="$v.status eq 1"}认证中{/if}
+                    {if condition="$v.status eq 2"}已认证{/if}
+                    {if condition="$v.status eq 3"}认证驳回{/if}
+                  </td>
                   <td class="hidden-480">{$v.time|date="Y-m-d H:i:s",###}</td>
                   <td>
                    
-                   
+                    <a class="btn btn-xs btn-info" href="{:url('Member/modifys',array('uid'=>$v['uid']))}" title="认证信息">
+                      认证信息
+                    </a> 
                     <button class="btn btn-xs btn-danger" type="button" onclick="dels({$v.uid})" title="删除">
                       删除
                     </button> 

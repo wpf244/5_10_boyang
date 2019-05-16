@@ -24,10 +24,59 @@
                             <i class="ace-icon fa fa-home home-icon"></i>
                             <a href="{:url('Index/index')}">首页</a>
                         </li>
-                        <li class="active">添加会员</li>
+                        <li class="active">观看视频</li>
                     </ul><!-- /.breadcrumb -->
 
                 </div>
+
+                <div id="sidebar2" class="sidebar h-sidebar navbar-collapse collapse ace-save-state">
+                        <ul class="nav nav-list header-nav" id="header-nav">
+                            <li>
+                                <a href="{:url('Integ/lister')}">
+                                  <o class="font12 {if condition='ACTION_NAME eq "lister" '} rigbg {/if}">登录</o>
+                                </a>
+                              <b class="arrow"></b>
+                            </li>
+                            <li>
+                              <a href="{:url('Integ/read')}">
+                                 <o class="font12 {if condition='ACTION_NAME eq "read" '} rigbg {/if}">阅读文章</o>                                                      
+                                </a>
+                              <b class="arrow"></b>
+                            </li>
+                
+                            <li>
+                                <a href="{:url('Integ/look')}">
+                                   <o class="font12 {if condition='ACTION_NAME eq "look" '} rigbg {/if}">观看视频</o>                                                      
+                                  </a>
+                                <b class="arrow"></b>
+                              </li>
+                
+                              <li>
+                                  <a href="{:url('Integ/reads')}">
+                                     <o class="font12 {if condition='ACTION_NAME eq "reads" '} rigbg {/if}">文章学习时长</o>                                                      
+                                    </a>
+                                  <b class="arrow"></b>
+                                </li>
+                
+                                <li>
+                                    <a href="{:url('Integ/looks')}">
+                                       <o class="font12 {if condition='ACTION_NAME eq "looks" '} rigbg {/if}">视频学习时长</o>                                                      
+                                      </a>
+                                    <b class="arrow"></b>
+                                  </li>
+                
+                                  <li>
+                                      <a href="{:url('Integ/intell')}">
+                                         <o class="font12 {if condition='ACTION_NAME eq "intell" '} rigbg {/if}">智能答题</o>                                                      
+                                        </a>
+                                      <b class="arrow"></b>
+                                    </li>
+                
+                           
+                         
+                                                
+                        </ul>
+                      </div>
 
                 <div class="page-content">
 
@@ -36,92 +85,37 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <div class="col-sm-10 col-sm-offset-1">
-                                <form id="logoForm" class="form-horizontal" action="{:url('Member/save')}" method="post" enctype="multipart/form-data">
+                                <form id="logoForm" class="form-horizontal" action="{:url('Integ/savel')}" method="post" enctype="multipart/form-data">
                                     <div class="row">
                                         <div class="col-sm-7">
                                             <div class="widget-box transparent">
                                                 <div class="widget-header widget-header-flat">
-                                                    <h4 class="widget-title"><i class="ace-icon fa fa-leaf green"></i>会员信息</h4>
+                                                    <h4 class="widget-title"><i class="ace-icon fa fa-leaf green"></i>观看视频</h4>
                                                 </div>
                                                 <div class="widget-body">
                                                     <div class="widget-main">
 
-                                                            <div class="form-group">
-                                                                    <label class="col-sm-2 control-label no-padding-right" for="">手机号码</label>
-                                                                    <div class="col-sm-10">
-                                                                        <input class="form-control" type="text" placeholder="请输入手机号码" name="phone"  required >
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="form-group">
-                                                                        <label class="col-sm-2 control-label no-padding-right" for="">登录密码</label>
-                                                                        <div class="col-sm-10">
-                                                                            <input class="form-control" type="text" placeholder="请输入登录密码" name="pwd"  required >
-                                                                        </div>
-                                                                    </div>
-
-                                                            <div class="form-group">
-                                                                    <label class="col-sm-2 control-label no-padding-right" for="">所属单位</label>
-                                                                  <div class="col-sm-10">
-                                                                    <select class="form-control" name="company_id" >
-                                                                      {volist name="res" id="v"}
-                                                                      <option value="{$v.cid}" >{$v.cname}</option>
-                                                                   {/volist}
-                                                                    </select>
-                                                                  </div> 
-                                                            </div>
-
                                                         <div class="form-group">
-                                                                <label class="col-sm-2 control-label no-padding-right" for="">职务</label>
+                                                                <label class="col-sm-2 control-label no-padding-right" for="">赠送积分</label>
                                                                 <div class="col-sm-10">
-                                                                    <input class="form-control" type="text" placeholder="请输入职务" name="job"  required >
+                                                                    <input class="form-control" type="text" placeholder="请输入赠送的积分" name="integ" value="{$re.integ}" required >
                                                                 </div>
                                                             </div>
                                                       
                                                         <div class="form-group">
-                                                            <label class="col-sm-2 control-label no-padding-right" for="">真实姓名</label>
+                                                            <label class="col-sm-2 control-label no-padding-right" for="">获得上限</label>
                                                             <div class="col-sm-10">
-                                                                <input class="form-control" type="text" name="username" placeholder="请输入真实姓名" required>
+                                                                <input class="form-control" type="text" name="toplimit" value="{$re.toplimit}" placeholder="请输入获得上限" required>
                                                             </div>
                                                         </div>
                                                         <div class="form-group">
-                                                            <label class="col-sm-2 control-label no-padding-right" for="">身份证号</label>
+                                                            <label class="col-sm-2 control-label no-padding-right" for="">提示语</label>
                                                             <div class="col-sm-10">
-                                                                <input class="form-control" type="text" name="idcode" placeholder="请输入身份证号"  required >
+                                                                <input class="form-control" type="text" name="desc" placeholder="请输入提示语" value="{$re.desc}" required >
                                                             </div>
                                                         </div>
                                                      
-                                                        <div class="form-group">
-                         
-                                                                <label class="col-sm-2 control-label no-padding-right" for="">认证状态</label>
-                                                                <div class="col-sm-2">
-                                                                  <label style="padding-top: 8px">
-                                                                    <input name="status" class="ace ace-switch ace-switch-6" type="radio" value="0"   />
-                                                                    <span class="lbl">未认证</span>
-                                                                  </label>
-                                                                </div>
-                                                                <div class="col-sm-2">
-                                                                  <label style="padding-top: 8px">
-                                                                    <input name="status" class="ace ace-switch ace-switch-6" type="radio" value="1"  />
-                                                                    <span class="lbl">认证中</span>
-                                                                  </label>
-                                                                </div>
-
-                                                                <div class="col-sm-2">
-                                                                        <label style="padding-top: 8px">
-                                                                          <input name="status" class="ace ace-switch ace-switch-6" type="radio" value="2" checked />
-                                                                          <span class="lbl">认证成功</span>
-                                                                        </label>
-                                                                      </div>
-
-                                                                      <div class="col-sm-2">
-                                                                            <label style="padding-top: 8px">
-                                                                              <input name="status" class="ace ace-switch ace-switch-6" type="radio" value="3"  />
-                                                                              <span class="lbl">认证驳回</span>
-                                                                            </label>
-                                                                          </div>
-
-                                                              </div>
+                                                        
                                                        
                                                        
                                                     </div>
@@ -136,10 +130,7 @@
                                                 <i class="ace-icon fa fa-floppy-o bigger-110"></i>
                                                 保存
                                             </button>
-                                            <a class="btn" href="{:url('Member/lister')}">
-                                                <i class="ace-icon fa fa-undo bigger-110"></i>
-                                                返回
-                                            </a>
+                                           
                                         </div>
                                     </div>
                                 </form>

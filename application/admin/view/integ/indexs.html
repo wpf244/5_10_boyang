@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+{include file="public:header"}
+
+<body class="no-skin">
+<!--头部-->
+{include file="public:nav"}
+
+<div class="main-container ace-save-state" id="main-container">
+  <!--菜单-->
+  <script type="text/javascript">
+  try{ace.settings.loadState('main-container')}catch(e){}
+</script>
+
+{include file="public:left"}
+
+  <div class="main-content">
+    <div class="main-content-inner">
+      <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+        <ul class="breadcrumb">
+          <li>
+            <i class="ace-icon fa fa-home home-icon"></i>
+            <a href="{:url('Index/index')}">首页</a>
+          </li>
+          <li class="active">个人月度排名</li>
+        </ul>
+
+      </div>
+
+      <div id="sidebar2" class="sidebar h-sidebar navbar-collapse collapse ace-save-state">
+        <ul class="nav nav-list header-nav" id="header-nav">
+            <li>
+                <a href="{:url('Integ/index')}">
+                  <o class="font12 {if condition='ACTION_NAME eq "index" '} rigbg {/if}">个人总积分排名</o>
+                </a>
+              <b class="arrow"></b>
+            </li>
+            <li>
+              <a href="{:url('Integ/indexs')}">
+                 <o class="font12 {if condition='ACTION_NAME eq "indexs" '} rigbg {/if}">个人月度排名</o>                                                      
+                </a>
+              <b class="arrow"></b>
+            </li>
+
+            <li>
+                <a href="{:url('Integ/teams')}">
+                   <o class="font12 {if condition='ACTION_NAME eq "teams" '} rigbg {/if}">团队总积分月度排名</o>                                                      
+                  </a>
+                <b class="arrow"></b>
+              </li>
+
+              <li>
+                  <a href="{:url('Integ/team')}">
+                     <o class="font12 {if condition='ACTION_NAME eq "team" '} rigbg {/if}">团队人均月度排名</o>                                                      
+                    </a>
+                  <b class="arrow"></b>
+                </li>
+
+                                
+        </ul>
+      </div>
+
+      <div class="page-content">
+        {include file="public:set"}
+        <div class="row">
+          
+          
+          <div class="col-xs-12">
+            <div class="col-sm-10 col-sm-offset-1">
+              <div class="page-header">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <a class="btn btn-success btn-white btn-bold" href="{:url('Integ/outs')}">
+                    导出数据
+                      </a>
+                 
+    
+                    </div>
+
+
+                <!-- <div class="col-sm-8 clearfix">
+                  <form class="form-inline pull-right" action="{:url('Integ/index')}" method="post">
+               
+                    
+                    <div class="form-group">
+                      <div class="input-group">
+									<span class="input-group-addon">
+											<i class="fa fa-th-list"></i>
+										</span>
+                        <select class="form-control" name="tid" >
+                          <option  value="0">个人总积分排名</option>
+                          <option  value="1">个人月度排名</option>
+                          <option  value="2">单位总分月度排名</option>
+                          <option  value="3">单位人均月度排名</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <div class="input-group">
+                        <span class="input-group-addon">
+                          <i class="ace-icon fa fa-check"></i>
+                        </span>
+                              <input type="text" name="keywords"  class="form-control search-query"  placeholder="请输入需查询的关键字">
+                        <span class="input-group-btn">
+										<button type="submit" class="btn btn-info btn-sm ajax-search-form">
+											<span class="ace-icon fa fa-search icon-on-right bigger-120"></span> 搜索
+									</button>
+									</span>
+                      </div>
+                    </div>
+                  </form>
+                </div> -->
+                </div>
+              </div>
+              <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                  
+                  <th>ID</th>
+                  <th class="hidden-480">账号名称</th>
+                  <th>账号类型</th>
+                  <th>真实姓名</th>
+                  <th>职务</th>
+                  <th>所属单位</th>
+                  <th>积分</th>
+                  <th class="hidden-480">认证状态</th> 
+                 
+                </tr>
+                </thead>
+               
+                <tbody>
+                {volist name="list" id="v"}
+                <tr class="ace-thumbnails">
+                 
+                  <td><span class="badge badge-grey">{$v.uid}</span></td>
+                  <td>{$v.phone}{$v.nickname}</td>
+                  <td> {if condition="$v.type eq 0"}微信注册会员{/if}
+                    {if condition="$v.type eq 1"}手机号注册会员{/if}</td>
+                  <td>{$v.username}</td>
+          
+                  <td>{$v.job}</td>
+                   
+                  <td>
+                      {$v.company}
+                  </td>
+
+                  <td>
+                      {$v.integ}
+                  </td>
+                  <td>
+                    {if condition="$v.status eq 0"}未认证{/if}
+                    {if condition="$v.status eq 1"}认证中{/if}
+                    {if condition="$v.status eq 2"}已认证{/if}
+                    {if condition="$v.status eq 3"}认证驳回{/if}
+                  </td>
+                </tr>
+                {/volist}
+                {empty name="list"}<tr><td colspan="18" class="text-center">暂无数据</td></tr>{/empty}
+                </tbody>
+               
+              </table>
+              <div class="text-center">
+                {$page}
+              </div>
+            </div>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+        </div>
+      </div><!-- /.page-content -->
+    </div>
+  </div><!-- /.main-content -->
+
+  <div class="modal fade" id="add" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+            aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">添加</h4>
+          </div>
+    <form id="logoForm" class="form-horizontal" action="{:url('Topic/addexcels')}" method="post" enctype="multipart/form-data">
+          
+          <div class="modal-body">
+  
+              <div class="form-group">
+                <label class="col-sm-2 control-label no-padding-right" for="">文件</label>
+                <div class="col-xs-8">
+                  <input multiple="" type="file" name="file" required />
+                
+                </div>
+              </div>
+             <input name="id" id="id" type="hidden" value="" />
+          
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            <button  type="submit" class="btn btn-primary">保存</button>
+          </div>
+           </form>
+        </div>
+      </div>
+    </div>
+
+
+ {include file="public:header"}
+
+<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+  <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+</a>
+</div><!-- /.main-container -->
+
+<script>
+  jQuery(function($) {
+    $('[data-rel=tooltip]').tooltip();
+
+    $( "#hide-option" ).tooltip({
+      hide: {
+        effect: "explode",
+        delay: 250
+      }
+    });
+
+   $(".btn-infos").click(function(){
+      var id = $(this).data("id");
+
+      $("#id").val(id);
+   })
+
+
+  })
+		function dels(id){
+			layer.confirm('你确定删除吗？', {icon: 3}, function(index){
+		    layer.close(index);
+		    window.location.href="__URL__/deletea/id/"+id;
+		  });
+	    }
+
+</script>
+ <script>
+    $(function(){
+      $('#logoForm').ajaxForm({
+        beforeSubmit: checkForm, // 此方法主要是提交前执行的方法，根据需要设置
+        success: complete, // 这是提交后的方法
+        dataType: 'json'
+      });
+      
+      function checkForm(){
+        
+        
+        }
+    
+      function complete(data){
+        if(data.status==1){
+          layer.alert(data.msg, {icon: 5}, function(index){
+           layer.close(index);
+           window.location.href=data.url;
+          });
+          
+        }else{
+          layer.alert(data.msg, {icon: 6}, function(index){
+           layer.close(index);
+           window.location.href=data.url;
+          });
+          
+        }
+      }
+     
+    });
+    
+    </script>
+
+  <script>
+  $("#change").click(function(){
+  	$("#sortForm").submit();
+  })
+
+  </script>
+</body>
+</html>

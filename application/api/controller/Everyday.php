@@ -121,6 +121,54 @@ class Everyday extends  BaseApi
         echo json_encode($arr);
     }
     /**
+    * 政治学习列表
+    *
+    * @return void
+    */
+    public function study()
+    {
+        $uid=Request::instance()->header("uid");
+
+        $re=db("study")->whereTime("time","d")->find();
+
+        $sid=$re['id'];
+
+        $log=db("study_log")->where(["uid"=>$uid,"sid"=>$sid])->find();
+
+        if($log){
+
+            $arr=[
+                'error_code'=>1,
+                'msg'=>'今天已经做过了,明天再来吧',
+                'data'=>[]
+            ]; 
+        }else{
+          
+            $tid=$re['tid'];
+
+            $tids=\explode(",",$tid);
+
+            $list=db("topic")->where(["id"=>["in",$tids]])->where("types",1)->select();
+
+            foreach($list as $k => $v){
+                $list[$k]['option']=explode(",",$v['option']);
+            }
+
+            $arr=[
+                'error_code'=>0,
+                'msg'=>'获取成功',
+                'data'=>[
+                    'sid'=>$sid,
+                    'title'=>$re['title'],
+                    'list'=>$list,
+                ]
+            ]; 
+
+        }
+
+        echo json_encode($arr);
+    }
+    /**
     * 下一题-提交本题答案
     *
     * @return void
@@ -144,7 +192,7 @@ class Everyday extends  BaseApi
             $type=$re['type'];
 
             //单选题比较
-            if($type == 0){
+            if($type == 0 || $type == 3){
                if($answer == $z_answer){
                    $types=1;
                }else{
@@ -180,6 +228,92 @@ class Everyday extends  BaseApi
                 db("topic_log")->where("id",$log['id'])->update($data);
             }else{
                 db("topic_log")->insert($data);
+            }
+            if($types == 1){
+                $arr=[
+                    'error_code'=>0,
+                    'msg'=>'回答正确',
+                    'data'=>[]
+                ];
+            }else{
+                $arr=[
+                    'error_code'=>1,
+                    'msg'=>'回答错误',
+                    'data'=>[]
+                ];
+            }
+            
+        }else{
+            $arr=[
+                'error_code'=>2,
+                'msg'=>'非法操作',
+                'data'=>[]
+            ]; 
+           
+        }
+       echo json_encode($arr);
+
+    }
+    /**
+    * 下一题-提交政治学习本题答案
+    *
+    * @return void
+    */
+    public function save_study()
+    {
+        $uid=Request::instance()->header("uid");
+
+        $id=input("id");
+
+        $sid=input("sid");
+
+        $answer=input("answer");
+
+        $re=db("topic")->where("id",$id)->find();
+
+        if($re){
+
+            $z_answer=$re['answer'];
+
+            $type=$re['type'];
+
+            //单选题比较
+            if($type == 0 || $type == 3){
+               if($answer == $z_answer){
+                   $types=1;
+               }else{
+                   $types=0;
+               }
+            }else{
+               $h_arr=explode(",",$answer);
+
+               $z_arr=explode(",",$z_answer);
+
+               if(count($h_arr) == count($z_arr)){
+                    $result=array_diff($z_arr,$h_arr);
+
+                    if($result){
+                        $types=0;
+                    }else{
+                        $types=1;
+                    }
+               }else{
+                    $types=0;
+               }
+            }
+            $data['tid']=$id;
+            $data['sid']=$sid;
+            $data['uid']=$uid;
+            $data['type']=$types;
+            $data['time']=time();
+            $data['content']=$answer;
+
+            $log=db("study_logs")->where(["uid"=>$uid,"tid"=>$id,"sid"=>$sid])->find();
+
+            if($log){
+                db("study_logs")->where("id",$log['id'])->update($data);
+            }else{
+                db("study_logs")->insert($data);
             }
             if($types == 1){
                 $arr=[
@@ -301,6 +435,92 @@ class Everyday extends  BaseApi
         echo json_encode($arr);
 
     }
+     /**
+    * 提交本次答题
+    *
+    * @return void
+    */
+    public function keep_study()
+    {
+        $uid=Request::instance()->header("uid");
+
+        $sid=input("sid");
+
+    
+        //查询用户答对了几道题
+        $integ=db("study_logs")->where(["uid"=>$uid,"sid"=>$sid,"type"=>1])->count();
+
+      
+        //查询用户一共答了几道题
+        $user_numbers=db("study_logs")->where(["uid"=>$uid,"sid"=>$sid])->count();
+
+        //正确率
+        $acc=$integ/$user_numbers;
+
+        $data['number']=\intval($acc*5);
+
+        $data['acc']=intval($acc*100);
+
+        $data['times']=input("time");
+
+        $data['time']=time();
+
+        $data['uid']=$uid;
+
+        $data['sid']=$sid;
+
+        $data['integ']=$integ;
+
+        $res=db("study_log")->where(["uid"=>$uid,"sid"=>$sid])->whereTime("time","d")->find();
+
+        if(empty($res)){
+            // 启动事务
+            Db::startTrans();
+            try{
+                $rea=db("study_log")->insert($data);
+
+                if($integ > 0){
+                    $log['uid']=$uid;
+                    $log['integ']=$integ;
+                    $log['content']="政治学习";
+                    $log['type']=1;
+                    $log['types']=8;
+                    $log['time']=time();
+
+                    //用户增加积分
+                    db("user")->where(["uid"=>$uid])->setInc("integ",$integ);
+
+                    db("integ_log")->insert($log);
+
+                }
+                $arr=[
+                    'error_code'=>0,
+                    'msg'=>'提交成功',
+                    'data'=>[]
+                ]; 
+                // 提交事务
+                Db::commit();    
+            } catch (\Exception $e) {
+                // 回滚事务
+                Db::rollback();
+
+                $arr=[
+                    'error_code'=>1,
+                    'msg'=>'提交失败',
+                    'data'=>[]
+                ]; 
+            }
+        }else{
+            $arr=[
+                'error_code'=>2,
+                'msg'=>'每天只能答题一次',
+                'data'=>[]
+            ]; 
+        }
+
+        echo json_encode($arr);
+
+    }
     /**
     * 答题报告
     *
@@ -313,6 +533,34 @@ class Everyday extends  BaseApi
         $re=db("topic_day_log")->where(["uid"=>$uid])->whereTime("time","d")->find();
 
         $re['title']=db("topic_day")->where("id",$re['did'])->find()['title'];
+
+        if($re){
+            $arr=[
+                'error_code'=>0,
+                'msg'=>'获取成功',
+                'data'=>$re
+            ]; 
+        }else{
+            $arr=[
+                'error_code'=>1,
+                'msg'=>'获取失败',
+                'data'=>[]
+            ]; 
+        }
+        echo json_encode($arr);
+    }
+    /**
+    * 政治学习答题报告
+    *
+    * @return void
+    */
+    public function inform_study()
+    {
+        $uid=Request::instance()->header("uid");
+
+        $re=db("study_log")->where(["uid"=>$uid])->whereTime("time","d")->find();
+
+        $re['title']=db("study")->where("id",$re['sid'])->find()['title'];
 
         if($re){
             $arr=[

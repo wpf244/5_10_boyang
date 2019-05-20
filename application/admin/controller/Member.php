@@ -305,13 +305,129 @@ class Member extends BaseAdmin
             }
         }else{
             $this->error("此手机号码已存在",url('lister'));
-        }
+        }   
+    }
+    public function means()
+    {
+        $list=db("user_log")->order("id desc")->paginate(20);
 
+        $this->assign("list",$list);
+
+        $page=$list->render();
+
+        $this->assign("page",$page);
         
+        return $this->fetch();
+    }
+    public function adds()
+    {
+        return $this->fetch();
+    }
+    public function saves()
+    {
+        $data=input("post.");
 
+        $re=db("user_log")->insert($data);
+
+        if($re){
+            $this->success("添加成功");
+        }else{
+            $this->error("添加失败");
+        }
+    }
+    public function modifyu()
+    {
+        $id=input("id");
+
+        $re=db("user_log")->where("id",$id)->find();
+
+        $this->assign("re",$re);
+
+        return $this->fetch();
+    }
+    public function usaves()
+    {
+        $id=input("id");
+
+        $re=db("user_log")->where("id",$id)->find();
+
+        if($re){
+            $data=input("post.");
+
+            $re=db("user_log")->where("id",$id)->update($data);
+    
+            if($re){
+                $this->success("修改成功",url('means'));
+            }else{
+                $this->error("修改失败",url('means'));
+            }
+        }else{
+            $this->error("非法操作",url('means'));
+        }
+        
         
     }
-   
+    public function deleteu()
+    {
+        $id=input('id');
+        $re=db("user_log")->where("id=$id")->find();
+        if($re){
+            
+            $del=db("user_log")->where("id=$id")->delete();
+            if($del){
+                
+                echo '0';
+            }else{
+                echo '1';
+            }
+        }else{
+            echo '2';
+        }
+    }
+
+    public function addexcel()
+    {
+       
+        vendor("PHPExcel.PHPExcel"); //获取PHPExcel类 
+        $excel = new \PHPExcel();  
+
+        $file = request()->file('file');  
+        $info = $file->validate(['ext'=>'xlsx,xls,csv'])->move(ROOT_PATH . 'public' . DS . 'uploads');
+
+        
+        if($info){
+        	$exclePath = $info->getSaveName();  //获取文件名  
+            $file_name = ROOT_PATH . 'public' . DS . 'uploads' . DS . $exclePath;   //上传文件的地址  
+
+          //  $objReader =\PHPExcel_IOFactory::createReader('Excel2007');  
+            $obj_PHPExcel =\PHPExcel_IOFactory::load($file_name, $encode = 'utf-8');
+         //   $obj_PHPExcel =$objReader->load($file_name, $encode = 'utf-8');  //加载文件内容,编码utf-8  
+         //   echo "<pre>";  
+            $excel_array=$obj_PHPExcel->getsheet(0)->toArray();   //转换为数组格式  
+            // array_shift($excel_array);  //删除第一个数组(标题);  
+            $arr  = reset($excel_array);
+            unset($excel_array[0]);
+            $data = [];  
+            $i=0;  
+            foreach($excel_array as $k=>$v) {  
+                $data[$k][$arr[0]] = $v[0];  
+                $data[$k][$arr[1]] = $v[1];  
+                $data[$k][$arr[2]] = $v[2]; 
+                $data[$k][$arr[3]] = $v[3]; 
+                $data[$k][$arr[4]] = $v[4]; 
+                $i++;  
+            }
+         //   var_dump($data);exit;
+            $res = db("user_log")->insertAll($data);
+
+            if($res){
+                $this->success("导入成功",url('means'));
+            }else{
+                $this->error("导入失败",url('means'));
+            }
+            
+        }
+    }
     
    
    

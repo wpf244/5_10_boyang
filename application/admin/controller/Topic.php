@@ -146,6 +146,50 @@ class Topic extends BaseAdmin
             
         }
     }
+    public function addexcelz()
+    {
+       
+        vendor("PHPExcel.PHPExcel"); //获取PHPExcel类 
+        $excel = new \PHPExcel();  
+
+        $file = request()->file('file');  
+        $info = $file->validate(['ext'=>'xlsx,xls,csv'])->move(ROOT_PATH . 'public' . DS . 'uploads');
+
+        
+        if($info){
+        	$exclePath = $info->getSaveName();  //获取文件名  
+            $file_name = ROOT_PATH . 'public' . DS . 'uploads' . DS . $exclePath;   //上传文件的地址  
+
+          //  $objReader =\PHPExcel_IOFactory::createReader('Excel2007');  
+            $obj_PHPExcel =\PHPExcel_IOFactory::load($file_name, $encode = 'utf-8');
+         //   $obj_PHPExcel =$objReader->load($file_name, $encode = 'utf-8');  //加载文件内容,编码utf-8  
+         //   echo "<pre>";  
+            $excel_array=$obj_PHPExcel->getsheet(0)->toArray();   //转换为数组格式  
+            // array_shift($excel_array);  //删除第一个数组(标题);  
+            $arr  = reset($excel_array);
+            unset($excel_array[0]);
+            $data = [];  
+            $i=0;  
+            foreach($excel_array as $k=>$v) {  
+                $data[$k][$arr[0]] = $v[0];  
+                $data[$k][$arr[1]] = $v[1];  
+                $data[$k][$arr[2]] = $v[2]; 
+                $data[$k][$arr[3]] = $v[3]; 
+                $data[$k][$arr[4]] = $v[4]; 
+                $data[$k]['types'] = 1;
+                $i++;  
+            }
+         //   var_dump($data);exit;
+            $res = db("topic")->insertAll($data);
+
+            if($res){
+                $this->success("导入成功",url('lister'));
+            }else{
+                $this->error("导入失败",url('lister'));
+            }
+            
+        }
+    }
     public function everyday()
     {
         $list=db("topic_day")->order("id desc")->paginate(20);
@@ -433,5 +477,43 @@ class Topic extends BaseAdmin
         }else{
             $this->error("非法操作",url("lister"));
         }
+    }
+    public function study()
+    {
+        
+        $list=db("study")->order("id desc")->paginate(20);
+
+        $this->assign("list",$list);
+
+        $page=$list->render();
+
+        $this->assign("page",$page);
+        
+        return $this->fetch();
+    }
+    public function lookz()
+    {
+        $id=input("id");
+
+        $re=db("study")->where("id",$id)->find();
+
+        $tid=$re['tid'];
+
+        $tids=\explode(",",$tid);
+
+        $list=db("topic")->where(["id"=>["in",$tids]])->select();
+
+        $this->assign("list",$list);
+        
+        return $this->fetch();
+
+    }
+    public function deletez(){
+        $id=input('id');
+        $re=db("study")->where("id",$id)->find();
+        if($re){
+            db("study")->where("id",$id)->delete();
+        }
+        $this->redirect('study');
     }
 }

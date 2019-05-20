@@ -36,7 +36,7 @@
             <div class="col-sm-10 col-sm-offset-1">
               <div class="page-header">
                 <div class="row">
-                <div class="col-sm-4">
+                <div class="col-sm-6">
                 <a class="btn btn-success btn-white btn-bold" href="{:url('Topic/add')}">
                   <i class="ace-icon fa fa-plus icon-only"></i>
                   添加</a>
@@ -51,10 +51,15 @@
 
                 <button class="btn btn-success btn-white btn-bold" data-toggle="modal" data-target="#add">
                     <i class="ace-icon fa fa-pencil"></i>
-                    导入题库</button>
+                    导入每日答题题库</button>
+
+                    <button class="btn btn-success btn-white btn-bold" data-toggle="modal" data-target="#adds">
+                        <i class="ace-icon fa fa-pencil"></i>
+                        导入政治学习题库</button>
+
                 </div>
 
-                <div class="col-sm-8 clearfix">
+                <div class="col-sm-6 clearfix">
                   <form class="form-inline pull-right" action="{:url('Topic/lister')}" method="post">
                
                     
@@ -90,6 +95,7 @@
                   <th>答案选项</th>
                   <th>正确答案</th>
                   <th>题目类型</th>
+                  <th>所属类别</th>
                   <th style="border-right:#ddd solid 1px;width:10%;" >操作</th>
                 </tr>
                 </thead>
@@ -115,8 +121,13 @@
                     {if condition="$v.type eq 0"}单选题{/if}
                     {if condition="$v.type eq 1"}多选题{/if}
                     {if condition="$v.type eq 2"}填空题{/if}
+                    {if condition="$v.type eq 3"}判断题{/if}
                   </td>
-
+                  <td>
+                      {if condition="$v.types eq 0"}每日答题{/if}
+                      {if condition="$v.types eq 1"}政治学习{/if}
+                     
+                    </td>
                   
                   <td>
                     <a class="btn btn-xs btn-info" href="{:url('Topic/modifys',array('id'=>$v['id']))}">
@@ -151,7 +162,7 @@
             aria-hidden="true">&times;</span></button>
             <h4 class="modal-title" id="myModalLabel">添加</h4>
           </div>
-    <form id="logoForm" class="form-horizontal" action="{:url('Topic/addexcel')}" method="post" enctype="multipart/form-data">
+    <form id="logoForms" class="form-horizontal" action="{:url('Topic/addexcel')}" method="post" enctype="multipart/form-data">
           
           <div class="modal-body">
   
@@ -173,6 +184,37 @@
         </div>
       </div>
     </div>
+
+    <div class="modal fade" id="adds" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+              aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="myModalLabel">添加</h4>
+            </div>
+      <form id="logoForm" class="form-horizontal" action="{:url('Topic/addexcelz')}" method="post" enctype="multipart/form-data">
+            
+            <div class="modal-body">
+    
+                <div class="form-group">
+                  <label class="col-sm-2 control-label no-padding-right" for="">文件</label>
+                  <div class="col-xs-8">
+                    <input multiple="" type="file" name="file" required />
+                  
+                  </div>
+                </div>
+  
+            
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+              <button  type="submit" class="btn btn-primary">保存</button>
+            </div>
+             </form>
+          </div>
+        </div>
+      </div>
 
 
  {include file="public:header"}
@@ -208,6 +250,39 @@
  <script>
     $(function(){
       $('#logoForm').ajaxForm({
+        beforeSubmit: checkForm, // 此方法主要是提交前执行的方法，根据需要设置
+        success: complete, // 这是提交后的方法
+        dataType: 'json'
+      });
+      
+      function checkForm(){
+        
+        
+        }
+    
+      function complete(data){
+        if(data.status==1){
+          layer.alert(data.msg, {icon: 5}, function(index){
+           layer.close(index);
+           window.location.href=data.url;
+          });
+          
+        }else{
+          layer.alert(data.msg, {icon: 6}, function(index){
+           layer.close(index);
+           window.location.href=data.url;
+          });
+          
+        }
+      }
+     
+    });
+    
+    </script>
+
+<script>
+    $(function(){
+      $('#logoForms').ajaxForm({
         beforeSubmit: checkForm, // 此方法主要是提交前执行的方法，根据需要设置
         success: complete, // 这是提交后的方法
         dataType: 'json'

@@ -111,7 +111,24 @@ class User extends BaseHome
 
         $data['apply_time']=time();
 
-        $data['status']=1;
+        $user=db("user")->where("uid",$uid)->find();
+
+        $phone=$user['phone'];
+
+        $username=input("username");
+        $company=input("company");
+        $job=input("job");
+        $idcode=input("idcode");
+
+        $log=db("user_log")->where(["phone"=>$phone,"username"=>$username,"company"=>$company,"job"=>$job,"idcode"=>$idcode])->find();
+
+        if($log){
+            $data['status']=2;
+        }else{
+
+            $data['status']=1;
+        }
+
 
         $res=db("user")->where("uid",$uid)->update($data);
 
@@ -894,7 +911,7 @@ class User extends BaseHome
 
         if($re['status'] == 1){
 
-            $list=db("analog_topic")->where(["aid"=>$id])->order(["sort asc","id asc"])->select();
+            $list=db("analog_topic")->where(["aid"=>$id])->order(["sort asc","id desc"])->limit("0,100")->select();
 
             foreach($list as $k => $v){
                 $list[$k]['option']=explode(",",$v['option']);
@@ -1007,9 +1024,18 @@ class User extends BaseHome
 
             $type=$re['type'];
 
+            $fen = 0;
+
             //单选题比较
-            if($type == 0){
+            if($type == 0 || $type == 3){
                if($answer == $z_answer){
+                   if($type == 0){
+                       $fen=1;
+                   }
+                   if($type == 3){
+                       $fen=0.5;
+                   }
+                 
                    $types=1;
                }else{
                    $types=0;
@@ -1023,8 +1049,10 @@ class User extends BaseHome
                     $result=array_diff($z_arr,$h_arr);
 
                     if($result){
+                        
                         $types=0;
                     }else{
+                        $fen = 2;
                         $types=1;
                     }
                }else{
@@ -1037,6 +1065,7 @@ class User extends BaseHome
             $data['type']=$types;
             $data['time']=time();
             $data['content']=$answer;
+            $data['fen']=$fen;
 
             $log=db("analog_topic_log")->where(["uid"=>$uid,"tid"=>$id,"aid"=>$aid])->find();
 
@@ -1085,14 +1114,14 @@ class User extends BaseHome
         //查询用户答对了几道题
         $user_number=db("analog_topic_log")->where(["uid"=>$uid,"aid"=>$aid,"type"=>1])->count();
 
-      
+        $grade=db("analog_topic_log")->where(["uid"=>$uid,"aid"=>$aid,"type"=>1])->sum("fen");
         //查询用户一共答了几道题
         $user_numbers=db("analog_topic_log")->where(["uid"=>$uid,"aid"=>$aid])->count();
 
         //正确率
         $acc=$user_number/$user_numbers;
 
-        $data['grade']=intval($acc*100);
+        $data['grade']=$grade;
 
         $data['time']=input("time");
 

@@ -153,7 +153,7 @@ class Integ extends BaseAdmin
         $objActSheet = $objExcel->getActiveSheet();
         $key = ord("A");
         $letter =explode(',',"A,B,C,D,E,F");
-        $arrHeader =  array("账号名称","账号类型","真实姓名","职务","所属单位","积分");
+        $arrHeader =  array("账号名称","账号类型","真实姓名","政治面貌","所属单位","积分");
         //填充表头信息
         $lenth =  count($arrHeader);
         for($i = 0;$i < $lenth;$i++) {
@@ -188,7 +188,7 @@ class Integ extends BaseAdmin
         $objActSheet->getColumnDimension('E')->setWidth(25);
         $objActSheet->getColumnDimension('F')->setWidth(30);
         
-        $outfile = "个人总积分排名".".xls";
+        $outfile = "全体积分排名".".xls";
     
         $userBrowser=$_SERVER['HTTP_USER_AGENT'];
         
@@ -267,7 +267,7 @@ class Integ extends BaseAdmin
         $objActSheet = $objExcel->getActiveSheet();
         $key = ord("A");
         $letter =explode(',',"A,B,C,D,E,F");
-        $arrHeader =  array("账号名称","账号类型","真实姓名","职务","所属单位","积分");
+        $arrHeader =  array("账号名称","账号类型","真实姓名","政治面貌","所属单位","积分");
         //填充表头信息
         $lenth =  count($arrHeader);
         for($i = 0;$i < $lenth;$i++) {
@@ -555,6 +555,93 @@ class Integ extends BaseAdmin
         header("Pragma: no-cache");
         $objWriter->save('php://output');
     }
+
+    public function indexd()
+    {
+        $list=db("user")->where("job","党员")->order("integ","desc")->paginate(20);
+
+        $this->assign("list",$list);
+
+        $page=$list->render();
+
+        $this->assign("page",$page);
+
+        return $this->fetch();
+    }
+    public function outd(){
+        
+         
+        $list=db("user")->where("job","党员")->order("integ","desc")->select();
+        
+        // var_dump($data);exit;
+        vendor('PHPExcel.PHPExcel');//调用类库,路径是基于vendor文件夹的
+        vendor('PHPExcel.PHPExcel.Worksheet.Drawing');
+        vendor('PHPExcel.PHPExcel.Writer.Excel2007');
+        $objExcel = new \PHPExcel();
+        //set document Property
+        $objWriter = \PHPExcel_IOFactory::createWriter($objExcel, 'Excel2007');
+    
+        $objActSheet = $objExcel->getActiveSheet();
+        $key = ord("A");
+        $letter =explode(',',"A,B,C,D,E,F");
+        $arrHeader =  array("账号名称","账号类型","真实姓名","政治面貌","所属单位","积分");
+        //填充表头信息
+        $lenth =  count($arrHeader);
+        for($i = 0;$i < $lenth;$i++) {
+            $objActSheet->setCellValue("$letter[$i]1","$arrHeader[$i]");
+        }
+        //填充表格信息
+        foreach($list as $k=>$v){
+            if($v['type'] == 0){
+                $v['type']="微信用户";
+            }else{
+                $v['type']="手机号注册";
+            }
+            $k +=2;
+            $objActSheet->setCellValue('A'.$k,$v['nickname'].$v['phone']);
+            $objActSheet->setCellValue('B'.$k, $v['type']);    
+            // 表格内容
+            $objActSheet->setCellValue('C'.$k, $v['username']);
+            $objActSheet->setCellValue('D'.$k, $v['job']);
+            $objActSheet->setCellValue('E'.$k, $v['company']);
+            $objActSheet->setCellValue('F'.$k, $v['integ']);
+        
+            // 表格高度
+            $objActSheet->getRowDimension($k)->setRowHeight(20);
+        }
+    
+        $width = array(20,20,15,10,10,30,10,15,15,15);
+        //设置表格的宽度
+        $objActSheet->getColumnDimension('A')->setWidth(20);
+        $objActSheet->getColumnDimension('B')->setWidth(20);
+        $objActSheet->getColumnDimension('C')->setWidth(25);
+        $objActSheet->getColumnDimension('D')->setWidth(25);
+        $objActSheet->getColumnDimension('E')->setWidth(25);
+        $objActSheet->getColumnDimension('F')->setWidth(30);
+        
+        $outfile = "党员积分排名".".xls";
+    
+        $userBrowser=$_SERVER['HTTP_USER_AGENT'];
+        
+        if(preg_match('/MSIE/i', $userBrowser)){
+            $outfile=urlencode($outfile);
+           
+        }else{
+            $outfile= iconv("utf-8","gb2312",$outfile);;
+            
+        }
+        ob_end_clean();
+        header("Content-Type: application/force-download");
+        header("Content-Type: application/octet-stream");
+        header("Content-Type: application/download");
+        header('Content-Disposition:inline;filename="'.$outfile.'"');
+        header("Content-Transfer-Encoding: binary");
+        header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+        header("Pragma: no-cache");
+        $objWriter->save('php://output');
+    }
+
+
 
 
 }

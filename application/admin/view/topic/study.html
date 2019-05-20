@@ -22,7 +22,7 @@
             <i class="ace-icon fa fa-home home-icon"></i>
             <a href="{:url('Index/index')}">首页</a>
           </li>
-          <li class="active">题库列表</li>
+          <li class="active">政治学习</li>
         </ul>
 
       </div>
@@ -36,50 +36,52 @@
             <div class="col-sm-10 col-sm-offset-1">
               <div class="page-header">
                 <div class="row">
-              
+                
+
                 </div>
               </div>
               <table class="table table-bordered table-hover">
                 <thead>
                 <tr>
-                
+                  
                   <th>ID</th>
+                  
                 
-                  <th class="hidden-480" style="width:30%;">题目名称</th>
-                  <th>答案选项</th>
-                  <th>正确答案</th>
-                  <th>题目类型</th>
+                  <th>标题</th>
                  
+                  <th>题目</th>
+                  <th style="border-right:#ddd solid 1px;width:10%;" >操作</th>
                 </tr>
                 </thead>
-               
+              
                 <tbody>
                 {volist name="list" id="v"}
-                <tr class="ace-thumbnails">
-                  
+                <tr class="ace-thumbnails">   
                   <td><span class="badge badge-grey">{$v.id}</span></td>
-                  
-                
+             
                   <td>{$v.title}</td>
-                  <td>{$v.option}</td>
+                  <td><a class="btn btn-xs btn-info" href="{:url('Topic/lookz',array('id'=>$v['id']))}">
+                    查看题库
+                  </a></td>
                 
           
-                  <td>{$v.answer}</td>
-                   
-                  <td>
-                    {if condition="$v.type eq 0"}单选题{/if}
-                    {if condition="$v.type eq 1"}多选题{/if}
-                    {if condition="$v.type eq 2"}填空题{/if}
-                    {if condition="$v.type eq 3"}判断题{/if}
-                  </td>
 
+                  
+                  <td>
+                  
+                    <button class="btn btn-xs btn-danger" type="button" onclick="dels({$v.id})">
+                      删除
+                    </button>
+                  </td>
                 </tr>
                 {/volist}
                 {empty name="list"}<tr><td colspan="18" class="text-center">暂无数据</td></tr>{/empty}
                 </tbody>
-                
+         
               </table>
-              
+              <div class="text-center">
+                {$page}
+              </div>
             </div>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -88,36 +90,18 @@
     </div>
   </div><!-- /.main-content -->
 
-  <div class="modal fade" id="add" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-      <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-            aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="myModalLabel">添加</h4>
-          </div>
-    <form id="logoForm" class="form-horizontal" action="{:url('Topic/addexcel')}" method="post" enctype="multipart/form-data">
-          
-          <div class="modal-body">
-  
-              <div class="form-group">
-                <label class="col-sm-2 control-label no-padding-right" for="">文件</label>
-                <div class="col-xs-8">
-                  <input multiple="" type="file" name="file" required />
-                
-                </div>
-              </div>
 
-          
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-            <button  type="submit" class="btn btn-primary">保存</button>
-          </div>
-           </form>
-        </div>
-      </div>
-    </div>
+
+
+<script>
+$(".btn-info").click(function()
+{
+  var id = $(this).data("id");
+
+$("#id").val(id);
+})  
+ 
+</script>
 
 
  {include file="public:header"}
@@ -145,7 +129,7 @@
 		function dels(id){
 			layer.confirm('你确定删除吗？', {icon: 3}, function(index){
 		    layer.close(index);
-		    window.location.href="__URL__/delete/id/"+id;
+		    window.location.href="__URL__/deletez/id/"+id;
 		  });
 	    }
 

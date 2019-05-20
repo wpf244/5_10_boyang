@@ -70,6 +70,7 @@
                     {if condition="$v.type eq 0"}单选题{/if}
                     {if condition="$v.type eq 1"}多选题{/if}
                     {if condition="$v.type eq 2"}填空题{/if}
+                    {if condition="$v.type eq 3"}判断题{/if}
                   </td>
                   <td>
                       <a class="btn btn-xs btn-info" href="{:url('Topic/modifyl',array('id'=>$v['id']))}">

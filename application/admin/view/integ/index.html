@@ -22,7 +22,7 @@
             <i class="ace-icon fa fa-home home-icon"></i>
             <a href="{:url('Index/index')}">首页</a>
           </li>
-          <li class="active">积分排名</li>
+          <li class="active">全体积分排名</li>
         </ul>
 
       </div>
@@ -31,7 +31,13 @@
         <ul class="nav nav-list header-nav" id="header-nav">
             <li>
                 <a href="{:url('Integ/index')}">
-                  <o class="font12 {if condition='ACTION_NAME eq "index" '} rigbg {/if}">个人总积分排名</o>
+                  <o class="font12 {if condition='ACTION_NAME eq "index" '} rigbg {/if}">全体积分排名</o>
+                </a>
+              <b class="arrow"></b>
+            </li>
+            <li>
+                <a href="{:url('Integ/indexd')}">
+                  <o class="font12 {if condition='ACTION_NAME eq "indexd" '} rigbg {/if}">党员积分排名</o>
                 </a>
               <b class="arrow"></b>
             </li>
@@ -121,7 +127,7 @@
                   <th class="hidden-480">账号名称</th>
                   <th>账号类型</th>
                   <th>真实姓名</th>
-                  <th>职务</th>
+                  <th>政治面貌</th>
                   <th>所属单位</th>
                   <th>积分</th>
                   <th class="hidden-480">认证状态</th> 

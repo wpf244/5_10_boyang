@@ -22,7 +22,7 @@
             <i class="ace-icon fa fa-home home-icon"></i>
             <a href="{:url('Index/index')}">首页</a>
           </li>
-          <li class="active">团队平均月度排名</li>
+          <li class="active">党员积分排名</li>
         </ul>
 
       </div>
@@ -76,7 +76,7 @@
               <div class="page-header">
                 <div class="row">
                   <div class="col-sm-4">
-                    <a class="btn btn-success btn-white btn-bold" href="{:url('Integ/out_team')}">
+                    <a class="btn btn-success btn-white btn-bold" href="{:url('Integ/outd')}">
                     导出数据
                       </a>
                  
@@ -124,10 +124,13 @@
                 <tr>
                   
                   <th>ID</th>
-                  
-                  <th>单位名称</th>
+                  <th class="hidden-480">账号名称</th>
+                  <th>账号类型</th>
+                  <th>真实姓名</th>
+                  <th>政治面貌</th>
+                  <th>所属单位</th>
                   <th>积分</th>
-               
+                  <th class="hidden-480">认证状态</th> 
                  
                 </tr>
                 </thead>
@@ -136,17 +139,27 @@
                 {volist name="list" id="v"}
                 <tr class="ace-thumbnails">
                  
-                  <td><span class="badge badge-grey">{$v.cid}</span></td>
-             
+                  <td><span class="badge badge-grey">{$v.uid}</span></td>
+                  <td>{$v.phone}{$v.nickname}</td>
+                  <td> {if condition="$v.type eq 0"}微信注册会员{/if}
+                    {if condition="$v.type eq 1"}手机号注册会员{/if}</td>
+                  <td>{$v.username}</td>
+          
+                  <td>{$v.job}</td>
                    
                   <td>
-                      {$v.cname}
+                      {$v.company}
                   </td>
 
                   <td>
                       {$v.integ}
                   </td>
-               
+                  <td>
+                    {if condition="$v.status eq 0"}未认证{/if}
+                    {if condition="$v.status eq 1"}认证中{/if}
+                    {if condition="$v.status eq 2"}已认证{/if}
+                    {if condition="$v.status eq 3"}认证驳回{/if}
+                  </td>
                 </tr>
                 {/volist}
                 {empty name="list"}<tr><td colspan="18" class="text-center">暂无数据</td></tr>{/empty}

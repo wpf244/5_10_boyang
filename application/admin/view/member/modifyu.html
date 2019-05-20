@@ -24,7 +24,7 @@
                             <i class="ace-icon fa fa-home home-icon"></i>
                             <a href="{:url('Index/index')}">首页</a>
                         </li>
-                        <li class="active">添加会员</li>
+                        <li class="active">修改信息</li>
                     </ul><!-- /.breadcrumb -->
 
                 </div>
@@ -36,12 +36,12 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <div class="col-sm-10 col-sm-offset-1">
-                                <form id="logoForm" class="form-horizontal" action="{:url('Member/save')}" method="post" enctype="multipart/form-data">
+                                <form id="logoForm" class="form-horizontal" action="{:url('Member/usaves')}" method="post" enctype="multipart/form-data">
                                     <div class="row">
                                         <div class="col-sm-7">
                                             <div class="widget-box transparent">
                                                 <div class="widget-header widget-header-flat">
-                                                    <h4 class="widget-title"><i class="ace-icon fa fa-leaf green"></i>会员信息</h4>
+                                                    <h4 class="widget-title"><i class="ace-icon fa fa-leaf green"></i>会员资料信息</h4>
                                                 </div>
                                                 <div class="widget-body">
                                                     <div class="widget-main">
@@ -49,79 +49,40 @@
                                                             <div class="form-group">
                                                                     <label class="col-sm-2 control-label no-padding-right" for="">手机号码</label>
                                                                     <div class="col-sm-10">
-                                                                        <input class="form-control" type="text" placeholder="请输入手机号码" name="phone"  required >
+                                                                        <input class="form-control" type="text" placeholder="请输入手机号码" name="phone" value="{$re.phone}"  required >
                                                                     </div>
                                                                 </div>
 
                                                                 <div class="form-group">
-                                                                        <label class="col-sm-2 control-label no-padding-right" for="">登录密码</label>
+                                                                        <label class="col-sm-2 control-label no-padding-right" for="">单位名称</label>
                                                                         <div class="col-sm-10">
-                                                                            <input class="form-control" type="text" placeholder="请输入登录密码" name="pwd"  required >
+                                                                            <input class="form-control" type="text" placeholder="请输入单位名称" name="company" value="{$re.company}"  required >
                                                                         </div>
                                                                     </div>
 
-                                                            <div class="form-group">
-                                                                    <label class="col-sm-2 control-label no-padding-right" for="">所属单位</label>
-                                                                  <div class="col-sm-10">
-                                                                    <select class="form-control" name="company_id" >
-                                                                      {volist name="res" id="v"}
-                                                                      <option value="{$v.cid}" >{$v.cname}</option>
-                                                                   {/volist}
-                                                                    </select>
-                                                                  </div> 
-                                                            </div>
+                                                       
 
                                                         <div class="form-group">
                                                                 <label class="col-sm-2 control-label no-padding-right" for="">政治面貌</label>
                                                                 <div class="col-sm-10">
-                                                                    <input class="form-control" type="text" placeholder="请输入政治面貌" name="job"  required >
+                                                                    <input class="form-control" type="text" placeholder="请输入政治面貌" name="job"  value="{$re.job}"  required >
                                                                 </div>
                                                             </div>
                                                       
                                                         <div class="form-group">
                                                             <label class="col-sm-2 control-label no-padding-right" for="">真实姓名</label>
                                                             <div class="col-sm-10">
-                                                                <input class="form-control" type="text" name="username" placeholder="请输入真实姓名" required>
+                                                                <input class="form-control" type="text" name="username" placeholder="请输入真实姓名" value="{$re.username}" required>
                                                             </div>
                                                         </div>
                                                         <div class="form-group">
                                                             <label class="col-sm-2 control-label no-padding-right" for="">身份证号</label>
                                                             <div class="col-sm-10">
-                                                                <input class="form-control" type="text" name="idcode" placeholder="请输入身份证号"  required >
+                                                                <input class="form-control" type="text" name="idcode" placeholder="请输入身份证号"  value="{$re.idcode}" required >
                                                             </div>
                                                         </div>
                                                      
-                                                        <div class="form-group">
-                         
-                                                                <label class="col-sm-2 control-label no-padding-right" for="">认证状态</label>
-                                                                <div class="col-sm-2">
-                                                                  <label style="padding-top: 8px">
-                                                                    <input name="status" class="ace ace-switch ace-switch-6" type="radio" value="0"   />
-                                                                    <span class="lbl">未认证</span>
-                                                                  </label>
-                                                                </div>
-                                                                <div class="col-sm-2">
-                                                                  <label style="padding-top: 8px">
-                                                                    <input name="status" class="ace ace-switch ace-switch-6" type="radio" value="1"  />
-                                                                    <span class="lbl">认证中</span>
-                                                                  </label>
-                                                                </div>
-
-                                                                <div class="col-sm-2">
-                                                                        <label style="padding-top: 8px">
-                                                                          <input name="status" class="ace ace-switch ace-switch-6" type="radio" value="2" checked />
-                                                                          <span class="lbl">认证成功</span>
-                                                                        </label>
-                                                                      </div>
-
-                                                                      <div class="col-sm-2">
-                                                                            <label style="padding-top: 8px">
-                                                                              <input name="status" class="ace ace-switch ace-switch-6" type="radio" value="3"  />
-                                                                              <span class="lbl">认证驳回</span>
-                                                                            </label>
-                                                                          </div>
-
-                                                              </div>
+                                                     
                                                        
                                                        
                                                     </div>
@@ -131,12 +92,12 @@
                                     </div>
                                     <div class="clearfix form-actions">
                                         <div class="col-md-offset-3 col-md-9">
-                                            
+                                          <input name="id" type="hidden" value="{$re.id}" />
                                             <button class="btn btn-info" type="submit">
                                                 <i class="ace-icon fa fa-floppy-o bigger-110"></i>
                                                 保存
                                             </button>
-                                            <a class="btn" href="{:url('Member/lister')}">
+                                            <a class="btn" href="{:url('Member/means')}">
                                                 <i class="ace-icon fa fa-undo bigger-110"></i>
                                                 返回
                                             </a>

@@ -640,6 +640,238 @@ class Integ extends BaseAdmin
         header("Pragma: no-cache");
         $objWriter->save('php://output');
     }
+    public function polit()
+    {
+      //  $list=db("user")->where("job","党员")->order("integ","desc")->paginate(20);
+
+        $list=db("user")->where("job","党员")->order("polit_integ desc")->paginate(20)->each(function($k,$v){
+
+            $integ=db("polit_integ_log")->where(["uid"=>$k['uid']])->whereTime("time","m")->sum("integ");
+
+            $k['integ']=$integ;
+
+            return $k;
+       }); 
+
+       $page=$list->render();
+
+   
+       $this->assign("page",$page);
+
+       $list=$list->toArray();
+    
+       $last_names = array_column($list['data'],'integ');
+       array_multisort($last_names,SORT_DESC,$list['data']);
+
+       $this->assign("list",$list['data']);
+
+        return $this->fetch();
+    }
+    public function polits()
+    {
+      //  $list=db("user")->where("job","党员")->order("integ","desc")->paginate(20);
+
+        $list=db("user")->order("polit_integ desc")->paginate(20)->each(function($k,$v){
+
+            $integ=db("polit_integ_log")->where(["uid"=>$k['uid']])->whereTime("time","m")->sum("integ");
+
+            $k['integ']=$integ;
+
+            return $k;
+       }); 
+
+       $page=$list->render();
+
+   
+       $this->assign("page",$page);
+
+       $list=$list->toArray();
+    
+       $last_names = array_column($list['data'],'integ');
+       array_multisort($last_names,SORT_DESC,$list['data']);
+
+       $this->assign("list",$list['data']);
+
+        return $this->fetch();
+    }
+    public function outp(){
+        
+         
+      //  $list=db("user")->where("job","党员")->order("integ","desc")->select();
+
+      $list=db("user")->where("job","党员")->order("polit_integ desc")->paginate(20)->each(function($k,$v){
+
+                $integ=db("polit_integ_log")->where(["uid"=>$k['uid']])->whereTime("time","m")->sum("integ");
+
+                $k['integ']=$integ;
+
+                return $k;
+        }); 
+
+
+       $list=$list->toArray();
+
+        $last_names = array_column($list['data'],'integ');
+        array_multisort($last_names,SORT_DESC,$list['data']);
+
+       $list=$list['data'];
+        
+        // var_dump($data);exit;
+        vendor('PHPExcel.PHPExcel');//调用类库,路径是基于vendor文件夹的
+        vendor('PHPExcel.PHPExcel.Worksheet.Drawing');
+        vendor('PHPExcel.PHPExcel.Writer.Excel2007');
+        $objExcel = new \PHPExcel();
+        //set document Property
+        $objWriter = \PHPExcel_IOFactory::createWriter($objExcel, 'Excel2007');
+    
+        $objActSheet = $objExcel->getActiveSheet();
+        $key = ord("A");
+        $letter =explode(',',"A,B,C,D,E,F");
+        $arrHeader =  array("账号名称","账号类型","真实姓名","政治面貌","所属单位","政治学习积分");
+        //填充表头信息
+        $lenth =  count($arrHeader);
+        for($i = 0;$i < $lenth;$i++) {
+            $objActSheet->setCellValue("$letter[$i]1","$arrHeader[$i]");
+        }
+        //填充表格信息
+        foreach($list as $k=>$v){
+            if($v['type'] == 0){
+                $v['type']="微信用户";
+            }else{
+                $v['type']="手机号注册";
+            }
+            $k +=2;
+            $objActSheet->setCellValue('A'.$k,$v['nickname'].$v['phone']);
+            $objActSheet->setCellValue('B'.$k, $v['type']);    
+            // 表格内容
+            $objActSheet->setCellValue('C'.$k, $v['username']);
+            $objActSheet->setCellValue('D'.$k, $v['job']);
+            $objActSheet->setCellValue('E'.$k, $v['company']);
+            $objActSheet->setCellValue('F'.$k, $v['integ']);
+        
+            // 表格高度
+            $objActSheet->getRowDimension($k)->setRowHeight(20);
+        }
+    
+        $width = array(20,20,15,10,10,30,10,15,15,15);
+        //设置表格的宽度
+        $objActSheet->getColumnDimension('A')->setWidth(20);
+        $objActSheet->getColumnDimension('B')->setWidth(20);
+        $objActSheet->getColumnDimension('C')->setWidth(25);
+        $objActSheet->getColumnDimension('D')->setWidth(25);
+        $objActSheet->getColumnDimension('E')->setWidth(25);
+        $objActSheet->getColumnDimension('F')->setWidth(30);
+        
+        $outfile = "党员政治学习积分月度排名".".xls";
+    
+        $userBrowser=$_SERVER['HTTP_USER_AGENT'];
+        
+        if(preg_match('/MSIE/i', $userBrowser)){
+            $outfile=urlencode($outfile);
+           
+        }else{
+            $outfile= iconv("utf-8","gb2312",$outfile);;
+            
+        }
+        ob_end_clean();
+        header("Content-Type: application/force-download");
+        header("Content-Type: application/octet-stream");
+        header("Content-Type: application/download");
+        header('Content-Disposition:inline;filename="'.$outfile.'"');
+        header("Content-Transfer-Encoding: binary");
+        header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+        header("Pragma: no-cache");
+        $objWriter->save('php://output');
+    }
+    public function outps(){
+        
+         
+        //  $list=db("user")->where("job","党员")->order("integ","desc")->select();
+  
+        $list=db("user")->order("polit_integ desc")->paginate(20)->each(function($k,$v){
+  
+                  $integ=db("polit_integ_log")->where(["uid"=>$k['uid']])->whereTime("time","m")->sum("integ");
+  
+                  $k['integ']=$integ;
+  
+                  return $k;
+          }); 
+  
+  
+         $list=$list->toArray();
+  
+          $last_names = array_column($list['data'],'integ');
+          array_multisort($last_names,SORT_DESC,$list['data']);
+  
+         $list=$list['data'];
+          
+          // var_dump($data);exit;
+          vendor('PHPExcel.PHPExcel');//调用类库,路径是基于vendor文件夹的
+          vendor('PHPExcel.PHPExcel.Worksheet.Drawing');
+          vendor('PHPExcel.PHPExcel.Writer.Excel2007');
+          $objExcel = new \PHPExcel();
+          //set document Property
+          $objWriter = \PHPExcel_IOFactory::createWriter($objExcel, 'Excel2007');
+      
+          $objActSheet = $objExcel->getActiveSheet();
+          $key = ord("A");
+          $letter =explode(',',"A,B,C,D,E,F");
+          $arrHeader =  array("账号名称","账号类型","真实姓名","政治面貌","所属单位","政治学习积分");
+          //填充表头信息
+          $lenth =  count($arrHeader);
+          for($i = 0;$i < $lenth;$i++) {
+              $objActSheet->setCellValue("$letter[$i]1","$arrHeader[$i]");
+          }
+          //填充表格信息
+          foreach($list as $k=>$v){
+              if($v['type'] == 0){
+                  $v['type']="微信用户";
+              }else{
+                  $v['type']="手机号注册";
+              }
+              $k +=2;
+              $objActSheet->setCellValue('A'.$k,$v['nickname'].$v['phone']);
+              $objActSheet->setCellValue('B'.$k, $v['type']);    
+              // 表格内容
+              $objActSheet->setCellValue('C'.$k, $v['username']);
+              $objActSheet->setCellValue('D'.$k, $v['job']);
+              $objActSheet->setCellValue('E'.$k, $v['company']);
+              $objActSheet->setCellValue('F'.$k, $v['integ']);
+          
+              // 表格高度
+              $objActSheet->getRowDimension($k)->setRowHeight(20);
+          }
+      
+          $width = array(20,20,15,10,10,30,10,15,15,15);
+          //设置表格的宽度
+          $objActSheet->getColumnDimension('A')->setWidth(20);
+          $objActSheet->getColumnDimension('B')->setWidth(20);
+          $objActSheet->getColumnDimension('C')->setWidth(25);
+          $objActSheet->getColumnDimension('D')->setWidth(25);
+          $objActSheet->getColumnDimension('E')->setWidth(25);
+          $objActSheet->getColumnDimension('F')->setWidth(30);
+          
+          $outfile = "全体政治学习积分月度排名".".xls";
+      
+          $userBrowser=$_SERVER['HTTP_USER_AGENT'];
+          
+          if(preg_match('/MSIE/i', $userBrowser)){
+              $outfile=urlencode($outfile);
+             
+          }else{
+              $outfile= iconv("utf-8","gb2312",$outfile);;
+              
+          }
+          ob_end_clean();
+          header("Content-Type: application/force-download");
+          header("Content-Type: application/octet-stream");
+          header("Content-Type: application/download");
+          header('Content-Disposition:inline;filename="'.$outfile.'"');
+          header("Content-Transfer-Encoding: binary");
+          header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+          header("Pragma: no-cache");
+          $objWriter->save('php://output');
+      }
 
 
 

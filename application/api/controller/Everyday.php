@@ -487,10 +487,10 @@ class Everyday extends  BaseApi
                     $log['types']=8;
                     $log['time']=time();
 
-                    //用户增加积分
-                    db("user")->where(["uid"=>$uid])->setInc("integ",$integ);
+                    //用户增加政治学习积分
+                    db("user")->where(["uid"=>$uid])->setInc("polit_integ",$integ);
 
-                    db("integ_log")->insert($log);
+                    db("polit_integ_log")->insert($log);
 
                 }
                 $arr=[
@@ -920,6 +920,24 @@ class Everyday extends  BaseApi
 
         echo json_encode($arr);
 
+    }
+    /**
+    * 积分规则
+    *
+    * @return void
+    */
+    public function integ_rule()
+    {
+        $re=db("lb")->field("desc")->where("fid",8)->find();
+
+        $re['desc']=strip_tags($re['desc']);
+
+        $arr=[
+            'error_code'=>0,
+            'msg'=>'提交成功',
+            'data'=>$re
+        ]; 
+        echo json_encode($arr);
     }
 
 

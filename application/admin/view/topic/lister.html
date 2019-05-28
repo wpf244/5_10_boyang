@@ -62,7 +62,31 @@
                 <div class="col-sm-6 clearfix">
                   <form class="form-inline pull-right" action="{:url('Topic/lister')}" method="post">
                
-                    
+                    <div class="form-group">
+                        <div class="input-group">
+                    <span class="input-group-addon">
+                        <i class="fa fa-th-list"></i>
+                      </span>
+                          <select class="form-control" name="type" >
+                            <option {if condition="$type eq 0"} selected {/if} value="0">题型</option>
+                            <option {if condition="$type eq 1"} selected {/if} value="1" >单选</option>
+                            <option {if condition="$type eq 2"} selected {/if} value="2" >多选</option>
+                            <option {if condition="$type eq 3"} selected {/if} value="3" >填空</option>
+                            <option {if condition="$type eq 4"} selected {/if} value="4" >判断</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                          <div class="input-group">
+                      
+                            <select class="form-control" name="types" >
+                              <option {if condition="$types eq 0"} selected {/if} value="0">类型</option>
+                              <option {if condition="$types eq 1"} selected {/if} value="1" >每日答题</option>
+                              <option {if condition="$types eq 2"} selected {/if} value="2" >政治学习</option>
+                           
+                            </select>
+                          </div>
+                        </div>
                     <div class="form-group">
                       <div class="input-group">
 									<span class="input-group-addon">

@@ -9,18 +9,34 @@ class Topic extends BaseAdmin
 
         $keywords=input("keywords");
 
-        if( $keywords){
+        $type=input("type");
+
+        $types=input('types');
+
+        if($keywords || $type  || $types ){
            
             if($keywords){
                 $map['title']=['like','%'.$keywords.'%'];
+            }
+            if($type){
+                $map['type']=['eq',($type-1)];
+            }
+            if($types){
+                $map['types']=['eq',($types-1)];
             }
         }else{
             $map=[];
 
             $keywords="";
+
+            $type=0;
+
+            $types =0;
         }
 
         $this->assign("keywords",$keywords);
+        $this->assign("type",$type);
+        $this->assign("types",$types);
         
         $list=db("topic")->where($map)->order(["sort asc","id desc"])->paginate(20,false,['query'=>request()->param()]);
 

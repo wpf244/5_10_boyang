@@ -943,10 +943,10 @@ class User extends BaseHome
 
             }else{
 
-             //   db("analog_log")->where(["uid"=>$uid,"aid"=>$id])->setField("status",0);
+         
 
                 $top['title']=$re['title'];
-                $top['times']=$re['times']*60;
+                $top['times']=intval($re['times'])*60;
 
                 $arr=[
                     'error_code'=>0,

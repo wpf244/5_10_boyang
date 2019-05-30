@@ -318,6 +318,12 @@ class Topic extends BaseAdmin
             $data['start_time']=strtotime($start_time);
             $data['end_time']=strtotime($end_time);
 
+            if($data['end_time'] > time()){
+                $data['status']=1;
+            }else{
+                $data['status']=0;
+            }
+
             $re=db("analog")->insert($data);
 
             if($re){
@@ -373,6 +379,12 @@ class Topic extends BaseAdmin
      
                  $data['start_time']=strtotime($start_time);
                  $data['end_time']=strtotime($end_time);
+
+                 if($data['end_time'] > time()){
+                    $data['status']=1;
+                }else{
+                    $data['status']=0;
+                }
      
                  $re=db("analog")->where("id",$id)->update($data);
      

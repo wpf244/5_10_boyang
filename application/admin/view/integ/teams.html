@@ -76,7 +76,7 @@
               <div class="page-header">
                 <div class="row">
                   <div class="col-sm-4">
-                    <a class="btn btn-success btn-white btn-bold" href="{:url('Integ/out_teams')}">
+                    <a class="btn btn-success btn-white btn-bold" id="out" >
                     导出数据
                       </a>
                  
@@ -84,39 +84,36 @@
                     </div>
 
 
-                <!-- <div class="col-sm-8 clearfix">
-                  <form class="form-inline pull-right" action="{:url('Integ/index')}" method="post">
-               
-                    
-                    <div class="form-group">
-                      <div class="input-group">
-									<span class="input-group-addon">
-											<i class="fa fa-th-list"></i>
-										</span>
-                        <select class="form-control" name="tid" >
-                          <option  value="0">个人总积分排名</option>
-                          <option  value="1">个人月度排名</option>
-                          <option  value="2">单位总分月度排名</option>
-                          <option  value="3">单位人均月度排名</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <div class="form-group">
-                      <div class="input-group">
-                        <span class="input-group-addon">
-                          <i class="ace-icon fa fa-check"></i>
+                    <div class="col-sm-8 clearfix">
+                        <form class="form-inline pull-right" action="__URL__/teams" method="post">
+      
+                        
+      
+                          <div class="form-group">
+                            <div class="input-daterange input-group">
+                  <input type="text" class="form-control search-query" name="start" value="{$start}" placeholder="选择开始时间" />
+                  <span class="input-group-addon">
+                    <i class="fa fa-exchange"></i>
+                  </span>
+      
+                  <input type="text" class="form-control search-query" name="end" value="{$end}" placeholder="选择结束时间" />
+                </div>
+                            
+                          </div>
+                          
+                          <div class="form-group">
+                        
+                
+                            <div class="input-group">
+                              
+                          <button type="submit" class="btn btn-info btn-sm ajax-search-form">
+                            <span class="ace-icon fa fa-search icon-on-right bigger-120"></span> 搜索
+                        </button>
                         </span>
-                              <input type="text" name="keywords"  class="form-control search-query"  placeholder="请输入需查询的关键字">
-                        <span class="input-group-btn">
-										<button type="submit" class="btn btn-info btn-sm ajax-search-form">
-											<span class="ace-icon fa fa-search icon-on-right bigger-120"></span> 搜索
-									</button>
-									</span>
-                      </div>
-                    </div>
-                  </form>
-                </div> -->
+                            </div>
+                          </div>
+                        </form>
+                      </div> 
                 </div>
               </div>
               <table class="table table-bordered table-hover">
@@ -202,6 +199,38 @@
   <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
 </a>
 </div><!-- /.main-container -->
+
+<script>
+    jQuery(function($) {
+      
+      $('.input-daterange').datepicker({
+        autoclose:true,
+        language:"zh-CN",
+            format:"yyyy-mm-dd"
+            });
+      
+    
+  
+    })
+  </script>
+
+<script>
+    $("#out").click(function(){
+      var start="{$start}";
+      var end = "{$end}";
+    
+     
+      if(start == ''){
+        start=0;
+      }
+      if(end == ''){
+        end=0;
+      }
+    
+     
+      location.href="__URL__/out_teams/start/"+start+"/end/"+end;
+    })
+   </script>
 
 <script>
   jQuery(function($) {

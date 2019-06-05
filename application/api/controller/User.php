@@ -120,7 +120,7 @@ class User extends BaseHome
         $job=input("job");
         $idcode=input("idcode");
 
-        $log=db("user_log")->where(["phone"=>$phone,"username"=>$username,"company"=>$company,"job"=>$job,"idcode"=>$idcode])->find();
+        $log=db("user_log")->where(["username"=>$username,"company"=>$company,"idcode"=>$idcode])->find();
 
         if($log){
             $data['status']=2;

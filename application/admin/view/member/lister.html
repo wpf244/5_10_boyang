@@ -40,6 +40,25 @@
                         添加会员
                     </a>
                 </div>
+                <div class="col-sm-8 clearfix">
+                  <form class="form-inline pull-right" action="{:url('Member/lister')}" method="post">
+                  
+                    
+                    <div class="form-group">
+                      <div class="input-group">
+									<span class="input-group-addon">
+										<i class="ace-icon fa fa-check"></i>
+									</span>
+                        <input type="text" name="keywords"  class="form-control search-query" value="{$keywords}" placeholder="请输入需查询的关键字">
+                        <span class="input-group-btn">
+										<button type="submit" class="btn btn-info btn-sm ajax-search-form">
+											<span class="ace-icon fa fa-search icon-on-right bigger-120"></span> 搜索
+									</button>
+									</span>
+                      </div>
+                    </div>
+                  </form>
+                </div>
                 </div>
               </div>
               <table class="table table-bordered table-hover">
@@ -48,7 +67,8 @@
                   <th>ID</th>           
                   <th class="hidden-480">会员账号</th>
                   <th class="hidden-480">会员积分</th>
-                  <th class="hidden-480">会员类型</th> 
+                  <th class="hidden-480">单位名称</th> 
+                  <th class="hidden-480">政治面貌</th>
                   <th class="hidden-480">认证状态</th> 
                   <th class="hidden-480">注册时间</th>
                   <th style="border-right:#ddd solid 1px;">操作</th>
@@ -65,8 +85,10 @@
                     {$v.integ}
                   </td>
                   <td>
-                    {if condition="$v.type eq 0"}微信注册会员{/if}
-                    {if condition="$v.type eq 1"}手机号注册会员{/if}
+                    {$v.company}
+                  </td>
+                  <td>
+                    {$v.job}
                   </td>
                   <td>
                     {if condition="$v.status eq 0"}未认证{/if}
@@ -85,7 +107,10 @@
                     </button> 
                   </td>
                 </tr>
+
+            
                 {/volist}
+               <tr><td colspan="8" class="text-right">总计:{$cou}</td></tr> 
                 {empty name="list"}<tr><td colspan="11" class="text-center">暂无数据</td></tr>{/empty}
                 </tbody>
 

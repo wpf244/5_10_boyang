@@ -81,7 +81,7 @@ class News extends BaseAdmin
         $this->assign("tid",$tid);
         $this->assign("keywords",$keywords);
         
-        $list=db("news")->alias("a")->where(["is_delete"=>0])->where($map)->join("news_type b","a.tid=b.type_id")->order(["sort asc","banner desc","status desc","id desc"])->paginate(20);
+        $list=db("news")->alias("a")->where(["is_delete"=>0])->where($map)->join("news_type b","a.tid=b.type_id")->order(["sort asc","banner desc","status desc","id desc"])->paginate(20,false,['query'=>request()->param()]);
 
         $this->assign("list",$list);
 

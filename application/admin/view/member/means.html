@@ -47,7 +47,23 @@
                 </div>
 
                 <div class="col-sm-8 clearfix">
-                 
+                  <form class="form-inline pull-right" action="{:url('Member/means')}" method="post">
+                  
+                    
+                    <div class="form-group">
+                      <div class="input-group">
+									<span class="input-group-addon">
+										<i class="ace-icon fa fa-check"></i>
+									</span>
+                        <input type="text" name="keywords"  class="form-control search-query" value="{$keywords}" placeholder="请输入需查询的关键字">
+                        <span class="input-group-btn">
+										<button type="submit" class="btn btn-info btn-sm ajax-search-form">
+											<span class="ace-icon fa fa-search icon-on-right bigger-120"></span> 搜索
+									</button>
+									</span>
+                      </div>
+                    </div>
+                  </form>
                 </div>
                 </div>
               </div>

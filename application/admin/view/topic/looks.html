@@ -36,13 +36,25 @@
             <div class="col-sm-10 col-sm-offset-1">
               <div class="page-header">
                 <div class="row">
-              
+                  <div class="col-sm-6">
+                   
+                    <button class="btn btn-danger btn-white btn-bold del-btns">
+                      <i class="ace-icon fa fa-trash-o icon-only"></i>
+                      删除
+                    </button>
+    
+                    </div>
                 </div>
               </div>
               <table class="table table-bordered table-hover">
                 <thead>
                 <tr>
-                
+                  <th class="center">
+                    <label class="pos-rel">
+                      <input type="checkbox" class="ace checkAll">
+                      <span class="lbl"></span>
+                    </label>
+                  </th>
                   <th>ID</th>
                   <th>模板名称</th>
                   <th class="hidden-480" style="width:30%;">题目名称</th>
@@ -56,7 +68,11 @@
                 <tbody>
                 {volist name="list" id="v"}
                 <tr class="ace-thumbnails">
-                  
+                  <td class="center"><label class="pos-rel">
+                    <input type="checkbox" class="ace check" value="{$v.id}">
+                    <span class="lbl"></span>
+                  </label>
+                  </td>
                   <td><span class="badge badge-grey">{$v.id}</span></td>
                   
                   <td>{$re.title}</td>
@@ -171,7 +187,22 @@
         })
 		  });
 	    }
-
+      $(".del-btns").on(ace.click_event,function(){
+	var valarr = [];
+	var checkitem = $(".check:checked")
+    var len = checkitem.length;
+    if(len>0){
+    	for(let i = 0; i < len;i++){
+    		valarr.push(checkitem.eq(i).val())
+    	}
+      layer.confirm('是否删除?',{icon: 3},function (index) {
+        layer.close(index);
+        window.location.href="__URL__/delete_alls/id/"+valarr;
+      });
+    }else{
+      layer.msg("请先选择数据");
+    }
+  });
 </script>
  <script>
     $(function(){

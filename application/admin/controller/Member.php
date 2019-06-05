@@ -8,7 +8,27 @@ class Member extends BaseAdmin
 {
     public function lister()
     {
-        $list=db("user")->order("uid desc")->paginate(10);
+        
+        $keywords=input("keywords");
+
+        if($keywords){
+           
+            if($keywords){
+                $map['phone|company']=['like','%'.$keywords.'%'];
+            }
+        }else{
+            $map=[];
+
+            $keywords="";
+        }
+
+        $this->assign("keywords",$keywords);
+        
+        $list=db("user")->order("uid desc")->where($map)->paginate(20,false,['query'=>request()->param()]);
+
+        $cou=db("user")->order("uid desc")->where($map)->count();
+
+        $this->assign("cou",$cou);
         
     
         $this->assign("list",$list);
@@ -309,7 +329,23 @@ class Member extends BaseAdmin
     }
     public function means()
     {
-        $list=db("user_log")->order("id desc")->paginate(20);
+        
+        $keywords=input("keywords");
+
+        if($keywords){
+           
+            if($keywords){
+                $map['username|company']=['like','%'.$keywords.'%'];
+            }
+        }else{
+            $map=[];
+
+            $keywords="";
+        }
+
+        $this->assign("keywords",$keywords);
+        
+        $list=db("user_log")->order("id desc")->where($map)->paginate(20,false,["query"=>request()->param()]);
 
         $this->assign("list",$list);
 

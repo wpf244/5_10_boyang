@@ -67,6 +67,7 @@
                   <th>ID</th>           
                   <th class="hidden-480">会员账号</th>
                   <th class="hidden-480">会员积分</th>
+                  <th class="hidden-480">政治学习积分</th>
                   <th class="hidden-480">单位名称</th> 
                   <th class="hidden-480">政治面貌</th>
                   <th class="hidden-480">认证状态</th> 
@@ -84,6 +85,9 @@
                   <td class="ace-thumbnails hidden-480">
                     {$v.integ}
                   </td>
+                  <td class="ace-thumbnails hidden-480">
+                      {$v.polit_integ}
+                    </td>
                   <td>
                     {$v.company}
                   </td>
@@ -110,7 +114,7 @@
 
             
                 {/volist}
-               <tr><td colspan="8" class="text-right">总计:{$cou}</td></tr> 
+               <tr><td colspan="10" class="text-right">总计人数:{$cou}</td></tr> 
                 {empty name="list"}<tr><td colspan="11" class="text-center">暂无数据</td></tr>{/empty}
                 </tbody>
 

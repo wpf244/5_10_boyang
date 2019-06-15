@@ -272,12 +272,47 @@ class User extends BaseHome
     {
         $uid=Request::instance()->header("uid");
 
-        $re=db("user")->field("integ")->where("uid",$uid)->find();
+        $re=db("user")->field("integ,polit_integ")->where("uid",$uid)->find();
 
         $arr=[
             'error_code'=>0,
             'msg'=>'获取成功',
             'data'=>$re
+        ]; 
+    
+        echo json_encode($arr);
+    }
+    /**
+    * 积分排名
+    *
+    * @return void
+    */
+    public function ranking()
+    {
+        $uid=Request::instance()->header("uid");
+
+        $ranking="暂无排名";
+       
+        $res=db("user")->field("username,integ,uid")->order("integ desc")->select();
+
+        foreach($res as $k => $v){
+            if($v['uid'] == $uid){
+                $ranking=($k+1);
+            }
+        }
+
+        //党员排名
+        $party=db("user")->where("job","党员")->field("username,integ,uid")->order("integ desc")->select();
+
+
+        $arr=[
+            'error_code'=>0,
+            'msg'=>'获取成功',
+            'data'=>[
+                'ranking'=>$ranking,
+                'list'=>$res,
+                'party'=>$party,
+                ]
         ]; 
     
         echo json_encode($arr);

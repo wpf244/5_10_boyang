@@ -16,12 +16,17 @@ class Everyday extends  BaseApi
         $uid=Request::instance()->header("uid");
         
         //每日答题列表
-         $list=db("topic_day")->field("id,title,statu")->order("id desc")->limit("0,4")->select();
+         $list=db("topic_day")->field("id,title,statu")->where("statu",0)->order("id desc")->limit("0,4")->select();
 
          foreach($list as $k => $v){
              $re=db("topic_day_log")->where(["uid"=>$uid,"did"=>$v['id']])->find();
              if($re){
-                $list[$k]['status']=1;
+                if($re['status'] == 0){
+                    $list[$k]['status']=1;
+                }else{
+                    $list[$k]['status']=2;
+                } 
+                
                 $list[$k]['number']=$re['number'];
 
              }else{
@@ -108,6 +113,16 @@ class Everyday extends  BaseApi
             $list[$k]['option']=explode(",",$v['option']);
         }
 
+        $uid=Request::instance()->header("uid");
+
+        $num=db("topic_log")->where(["uid"=>$uid,"did"=>$id])->count();
+
+        $log=db("topic_day_log")->where(["uid"=>$uid,"did"=>$id])->find();
+
+        if($log){
+            $num=0;
+        }
+
         
 
         $arr=[
@@ -115,6 +130,7 @@ class Everyday extends  BaseApi
             'msg'=>'获取成功',
             'data'=>[
                 'title'=>$re['title'],
+                'num'=>$num,
                 'list'=>$list,
             ]
         ]; 
@@ -391,6 +407,9 @@ class Everyday extends  BaseApi
             // 启动事务
             Db::startTrans();
             try{
+               if($integ >0){
+                   $data['status']=1;
+               } 
                 $rea=db("topic_day_log")->insert($data);
 
                 if($integ > 0){

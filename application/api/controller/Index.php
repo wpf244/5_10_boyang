@@ -79,7 +79,7 @@ class Index extends BaseHome
     {
         $id=input("id");
 
-        $re=db("news")->field("id,title,source,time,content")->where("id",$id)->find();
+        $re=db("news")->field("id,title,source,time,content,video_src")->where("id",$id)->find();
 
         if($re){
 

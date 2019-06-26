@@ -125,7 +125,7 @@ class Integ extends BaseAdmin
     }
     public function index()
     {
-        $list=db("user")->order(["integ desc"])->paginate(20,false,['query'=>request()->param()]);
+        $list=db("user")->where("status",2)->order(["integ desc"])->paginate(20,false,['query'=>request()->param()]);
 
         $this->assign("list",$list);
 
@@ -140,7 +140,7 @@ class Integ extends BaseAdmin
     public function out(){
         
          
-        $list=db("user")->order(["integ desc"])->select();
+        $list=db("user")->where("status",2)->order(["integ desc"])->select();
         
         // var_dump($data);exit;
         vendor('PHPExcel.PHPExcel');//调用类库,路径是基于vendor文件夹的
@@ -224,7 +224,7 @@ class Integ extends BaseAdmin
         $this->assign("start",$start);
         $this->assign("end",$end);
         
-        $list=db("user")->order("integ desc")->paginate(20)->each(function($k,$v){
+        $list=db("user")->where("status",2)->order("integ desc")->paginate(20)->each(function($k,$v){
 
              $start=input('start');
               $end=input('end');
@@ -261,7 +261,7 @@ class Integ extends BaseAdmin
         
         $start=input('start');
         $end=input('end');
-        $list=db("user")->order(["integ desc"])->select();
+        $list=db("user")->where("status",2)->order(["integ desc"])->select();
 
         foreach($list as $ks => $vs ){
 
@@ -364,7 +364,7 @@ class Integ extends BaseAdmin
         
 
         $list=db("company")->order(["cid desc"])->paginate(20)->each(function($k,$v){
-              $user=db("user")->field("uid")->where(["company_id"=>$k['cid']])->select();
+              $user=db("user")->field("uid")->where("status",2)->where(["company_id"=>$k['cid']])->select();
               
               $arr=array();
               foreach($user as $vs){
@@ -410,7 +410,7 @@ class Integ extends BaseAdmin
         $list=db("company")->order(["cid desc"])->select();
 
         foreach($list as $ks => $vs ){
-            $user=db("user")->field("uid")->where(["company_id"=>$vs['cid']])->select();
+            $user=db("user")->field("uid")->where("status",2)->where(["company_id"=>$vs['cid']])->select();
               
               $arr=array();
               foreach($user as $vs){
@@ -502,7 +502,7 @@ class Integ extends BaseAdmin
         $this->assign("end",$end);
 
         $list=db("company")->order(["cid desc"])->paginate(20)->each(function($k,$v){
-              $user=db("user")->field("uid")->where(["company_id"=>$k['cid']])->select();
+              $user=db("user")->field("uid")->where("status",2)->where(["company_id"=>$k['cid']])->select();
               
               $arr=array();
               foreach($user as $vs){
@@ -557,7 +557,7 @@ class Integ extends BaseAdmin
         $list=db("company")->order(["cid desc"])->select();
 
         foreach($list as $ks => $vs ){
-            $user=db("user")->field("uid")->where(["company_id"=>$vs['cid']])->select();
+            $user=db("user")->field("uid")->where("status",2)->where(["company_id"=>$vs['cid']])->select();
               
               $arr=array();
               foreach($user as $vs){
@@ -651,7 +651,7 @@ class Integ extends BaseAdmin
 
     public function indexd()
     {
-        $list=db("user")->where("job","党员")->order("integ","desc")->paginate(20);
+        $list=db("user")->where("job","党员")->where("status",2)->order("integ","desc")->paginate(20);
 
         $this->assign("list",$list);
 
@@ -664,7 +664,7 @@ class Integ extends BaseAdmin
     public function outd(){
         
          
-        $list=db("user")->where("job","党员")->order("integ","desc")->select();
+        $list=db("user")->where("job","党员")->where("status",2)->order("integ","desc")->select();
         
         // var_dump($data);exit;
         vendor('PHPExcel.PHPExcel');//调用类库,路径是基于vendor文件夹的
@@ -744,7 +744,7 @@ class Integ extends BaseAdmin
         $this->assign("start",$start);
         $this->assign("end",$end);
 
-        $list=db("user")->where("job","党员")->order("polit_integ desc")->paginate(20)->each(function($k,$v){
+        $list=db("user")->where("job","党员")->where("status",2)->order("polit_integ desc")->paginate(20)->each(function($k,$v){
 
             $start=input('start');
             $end=input('end');
@@ -787,7 +787,7 @@ class Integ extends BaseAdmin
         $this->assign("start",$start);
         $this->assign("end",$end);
 
-        $list=db("user")->order("polit_integ desc")->paginate(20)->each(function($k,$v){
+        $list=db("user")->where("status",2)->order("polit_integ desc")->paginate(20)->each(function($k,$v){
 
             $start=input('start');
             $end=input('end');
@@ -824,7 +824,7 @@ class Integ extends BaseAdmin
          
       //  $list=db("user")->where("job","党员")->order("integ","desc")->select();
 
-      $list=db("user")->where("job","党员")->order("polit_integ desc")->paginate(20)->each(function($k,$v){
+      $list=db("user")->where("status",2)->where("job","党员")->order("polit_integ desc")->paginate(20)->each(function($k,$v){
 
      
         $start=input('start');
@@ -922,7 +922,7 @@ class Integ extends BaseAdmin
          
         //  $list=db("user")->where("job","党员")->order("integ","desc")->select();
   
-        $list=db("user")->order("polit_integ desc")->paginate(20)->each(function($k,$v){
+        $list=db("user")->where("status",2)->order("polit_integ desc")->paginate(20)->each(function($k,$v){
   
             $start=input('start');
             $end=input('end');

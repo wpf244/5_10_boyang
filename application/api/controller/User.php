@@ -293,7 +293,7 @@ class User extends BaseHome
 
         $ranking="暂无排名";
        
-        $res=db("user")->field("username,integ,uid")->order("integ desc")->select();
+        $res=db("user")->where("status",2)->field("username,integ,uid")->order("integ desc")->select();
 
         foreach($res as $k => $v){
             if($v['uid'] == $uid){
@@ -302,7 +302,7 @@ class User extends BaseHome
         }
 
         //党员排名
-        $party=db("user")->where("job","党员")->field("username,integ,uid")->order("integ desc")->select();
+        $party=db("user")->where("status",2)->where("job","党员")->field("username,integ,uid")->order("integ desc")->select();
 
 
         $arr=[

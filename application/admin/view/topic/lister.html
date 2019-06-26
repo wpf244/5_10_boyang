@@ -232,7 +232,7 @@
             
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal">关闭a</button>
               <button  type="submit" class="btn btn-primary">保存</button>
             </div>
              </form>
@@ -285,6 +285,7 @@
         }
     
       function complete(data){
+        // console.log(data);
         if(data.status==1){
           layer.alert(data.msg, {icon: 5}, function(index){
            layer.close(index);

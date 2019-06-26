@@ -464,12 +464,12 @@ class User extends BaseHome
             'error_code'=>0,
             'msg'=>'获取成功',
             'data'=>[
-                'login'=>$login,
-                'read'=>$read,
-                'look'=>$look,
+                // 'login'=>$login,
+                // 'read'=>$read,
+                // 'look'=>$look,
                 'reads'=>$reads,
                 'looks'=>$looks,
-                'intell'=>$intell
+                // 'intell'=>$intell
 
             ]
             

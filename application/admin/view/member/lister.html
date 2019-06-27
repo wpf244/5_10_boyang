@@ -66,8 +66,8 @@
                 <tr>
                   <th>ID</th>           
                   <th class="hidden-480">会员账号</th>
-                  <th class="hidden-480">会员积分</th>
-                  <th class="hidden-480">政治学习积分</th>
+                  <th class="hidden-480">会员积分 </th>
+                  <th class="hidden-480">政治学习积分 </th>
                   <th class="hidden-480">单位名称</th> 
                   <th class="hidden-480">政治面貌</th>
                   <th class="hidden-480">认证状态</th> 
@@ -83,10 +83,10 @@
                   <td>{$v.nickname}{$v.phone}</td>
                
                   <td class="ace-thumbnails hidden-480">
-                    {$v.integ}
+                    {$v.integ} <i class="ace-icon fa fa-pencil bigger-120" onclick="change_integ({$v.uid})"></i>
                   </td>
                   <td class="ace-thumbnails hidden-480">
-                      {$v.polit_integ}
+                      {$v.polit_integ} <i class="ace-icon fa fa-pencil bigger-120" onclick="change_integs({$v.uid})"></i>
                     </td>
                   <td>
                     {$v.company}
@@ -191,19 +191,53 @@
       })
     }
 
-    function change_money(id) {
+    function change_integ(id) {
       layer.prompt({
-        title: '请输入调整后的佣金',
+        title: '请输入调整后的积分',
         formType: 3
       }, function (text, index) {
         var n = /^[1-9]\d*$/;
         if (!n.test(text)) {
-          layer.alert('请输入正确数值的佣金');
+          layer.alert('请输入正确数值的积分');
           return false;
         } else {
           $.ajax({
             type: "post",
-            url: "__URL__/change_money",
+            url: "__URL__/change_integ",
+            data: {
+              id: id,
+              money: text
+            },
+            datatype: "text",
+            success: function (re) {
+              if (re == 1) {
+                layer.close(index);
+                layer.msg("调整成功");
+               location.reload();
+              } else {
+                layer.close(index);
+                layer.msg("系统繁忙，请稍后再试");
+               location.reload();
+              }
+
+            }
+          })
+        }
+      })
+    }
+    function change_integs(id) {
+      layer.prompt({
+        title: '请输入调整后的政治学习积分',
+        formType: 3
+      }, function (text, index) {
+        var n = /^[1-9]\d*$/;
+        if (!n.test(text)) {
+          layer.alert('请输入正确数值的积分');
+          return false;
+        } else {
+          $.ajax({
+            type: "post",
+            url: "__URL__/change_integs",
             data: {
               id: id,
               money: text

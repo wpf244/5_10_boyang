@@ -464,6 +464,53 @@ class Member extends BaseAdmin
             
         }
     }
+    /**
+    * 调整积分
+    *
+    * @return void
+    */
+    public function change_integ()
+    {
+        $id=input("id");
+        $money=input("money");
+
+        $re=db("user")->where("uid",$id)->find();
+
+        if($re){
+
+            $res=db("user")->where("uid",$id)->setField("integ",$money);
+
+            if($res){
+                echo '1';
+            }else{
+                echo '3';
+            }
+
+        }else{
+            echo '2';
+        }
+    }
+    public function change_integs()
+    {
+        $id=input("id");
+        $money=input("money");
+
+        $re=db("user")->where("uid",$id)->find();
+
+        if($re){
+
+            $res=db("user")->where("uid",$id)->setField("polit_integ",$money);
+
+            if($res){
+                echo '1';
+            }else{
+                echo '3';
+            }
+
+        }else{
+            echo '2';
+        }
+    }
     
    
    

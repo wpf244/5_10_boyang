@@ -124,10 +124,13 @@ class User extends BaseHome
 
         if($log){
             $data['status']=2;
+
+            $data['job']=$log['job'];
         }else{
 
             $data['status']=1;
         }
+        
 
 
         $res=db("user")->where("uid",$uid)->update($data);
@@ -302,7 +305,15 @@ class User extends BaseHome
         }
 
         //党员排名
-        $party=db("user")->where("status",2)->where("job","党员")->field("username,integ,uid")->order("integ desc")->select();
+        $party=db("user")->where("status",2)->where("job","党员")->field("username,polit_integ as integ,uid")->order("polit_integ desc")->select();
+
+        $user=db("user")->where(["uid"=>$uid,"job"=>"党员"])->find();
+
+        if($user){
+            $status=1;
+        }else{
+            $status=0;
+        }
 
 
         $arr=[
@@ -312,6 +323,7 @@ class User extends BaseHome
                 'ranking'=>$ranking,
                 'list'=>$res,
                 'party'=>$party,
+                'status'=>$status
                 ]
         ]; 
     
@@ -570,43 +582,43 @@ class User extends BaseHome
             
             //查询阅读文章规则
 
-            $read_integ=db("integ")->where("id",2)->find();
+            // $read_integ=db("integ")->where("id",2)->find();
 
-            $read_top=$read_integ['toplimit'];
+            // $read_top=$read_integ['toplimit'];
 
-            //查询用户今日阅读文章所得积分
+            // //查询用户今日阅读文章所得积分
 
-            $user_read_integ=db("integ_log")->where(["uid"=>$uid,"type"=>1,"types"=>2])->whereTime("time","d")->sum("integ");
+            // $user_read_integ=db("integ_log")->where(["uid"=>$uid,"type"=>1,"types"=>2])->whereTime("time","d")->sum("integ");
 
-            $user_read_new=db("integ_log")->where(["uid"=>$uid,"type"=>1,"types"=>2,"nid"=>$nid])->whereTime("time","d")->find();
+            // $user_read_new=db("integ_log")->where(["uid"=>$uid,"type"=>1,"types"=>2,"nid"=>$nid])->whereTime("time","d")->find();
 
-            if(empty($user_read_new)){
+            // if(empty($user_read_new)){
                 //今日所得积分没有超过上限
-                if($read_top > $user_read_integ){
+                // if($read_top > $user_read_integ){
                                 
-                    //用户增加积分和积分日志
+                //     //用户增加积分和积分日志
 
-                    $data['uid']=$uid;
-                    $data['integ']=$read_integ['integ'];
-                    $data['type']=1;
-                    $data['content']="阅读文章";
-                    $data['types']=2;
-                    $data['time']=time();
-                    $data['nid']=$nid;
+                //     $data['uid']=$uid;
+                //     $data['integ']=$read_integ['integ'];
+                //     $data['type']=1;
+                //     $data['content']="阅读文章";
+                //     $data['types']=2;
+                //     $data['time']=time();
+                //     $data['nid']=$nid;
 
-                    // 启动事务
-                    Db::startTrans();
-                    try{
-                        db("user")->where("uid",$uid)->setInc("integ",$read_integ['integ']);
-                        db("integ_log")->insert($data);
-                        // 提交事务
-                        Db::commit();    
-                    } catch (\Exception $e) {
-                        // 回滚事务
-                        Db::rollback();
-                    }
+                //     // 启动事务
+                //     Db::startTrans();
+                //     try{
+                //         db("user")->where("uid",$uid)->setInc("integ",$read_integ['integ']);
+                //         db("integ_log")->insert($data);
+                //         // 提交事务
+                //         Db::commit();    
+                //     } catch (\Exception $e) {
+                //         // 回滚事务
+                //         Db::rollback();
+                //     }
 
-                }
+                // }
 
                 //查询阅读文章时长规则
 
@@ -705,7 +717,7 @@ class User extends BaseHome
                     }
 
                 }
-            }
+            // }
         }
 
         if($news_type == 1){
@@ -713,43 +725,43 @@ class User extends BaseHome
             
             //查询观看视频规则
 
-            $read_integ=db("integ")->where("id",3)->find();
+            // $read_integ=db("integ")->where("id",3)->find();
 
-            $read_top=$read_integ['toplimit'];
+            // $read_top=$read_integ['toplimit'];
 
-            //查询用户今日阅读文章所得积分
+            // //查询用户今日阅读文章所得积分
 
-            $user_read_integ=db("integ_log")->where(["uid"=>$uid,"type"=>1,"types"=>3])->whereTime("time","d")->sum("integ");
+            // $user_read_integ=db("integ_log")->where(["uid"=>$uid,"type"=>1,"types"=>3])->whereTime("time","d")->sum("integ");
 
-            $user_read_new=db("integ_log")->where(["uid"=>$uid,"type"=>1,"types"=>3,"nid"=>$nid])->whereTime("time","d")->find();
+            // $user_read_new=db("integ_log")->where(["uid"=>$uid,"type"=>1,"types"=>3,"nid"=>$nid])->whereTime("time","d")->find();
 
-            if(empty($user_read_new)){
+            // if(empty($user_read_new)){
                 //今日所得积分没有超过上限
-                if($read_top > $user_read_integ){
+                // if($read_top > $user_read_integ){
                                 
-                    //用户增加积分和积分日志
+                //     //用户增加积分和积分日志
 
-                    $data['uid']=$uid;
-                    $data['integ']=$read_integ['integ'];
-                    $data['type']=1;
-                    $data['content']="观看视频";
-                    $data['time']=time();
-                    $data['types']=3;
-                    $data['nid']=$nid;
+                //     $data['uid']=$uid;
+                //     $data['integ']=$read_integ['integ'];
+                //     $data['type']=1;
+                //     $data['content']="观看视频";
+                //     $data['time']=time();
+                //     $data['types']=3;
+                //     $data['nid']=$nid;
 
-                    // 启动事务
-                    Db::startTrans();
-                    try{
-                        db("user")->where("uid",$uid)->setInc("integ",$read_integ['integ']);
-                        db("integ_log")->insert($data);
-                        // 提交事务
-                        Db::commit();    
-                    } catch (\Exception $e) {
-                        // 回滚事务
-                        Db::rollback();
-                    }
+                //     // 启动事务
+                //     Db::startTrans();
+                //     try{
+                //         db("user")->where("uid",$uid)->setInc("integ",$read_integ['integ']);
+                //         db("integ_log")->insert($data);
+                //         // 提交事务
+                //         Db::commit();    
+                //     } catch (\Exception $e) {
+                //         // 回滚事务
+                //         Db::rollback();
+                //     }
 
-                }
+                // }
 
                 //查询阅读文章时长规则
 
@@ -854,7 +866,7 @@ class User extends BaseHome
                     }
 
                 }
-            }
+            // }
         }
 
         $arr=[

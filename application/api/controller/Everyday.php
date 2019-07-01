@@ -375,11 +375,12 @@ class Everyday extends  BaseApi
         //查询用户答对了几道题
         $user_number=db("topic_log")->where(["uid"=>$uid,"did"=>$did,"type"=>1])->count();
 
-        if($user_number > $number){
-            $integ=($user_number-$number);
-        }else{
-            $integ=0;
-        }
+        // if($user_number > $number){
+        //     $integ=($user_number-$number);
+        // }else{
+        //     $integ=0;
+        // }
+        $integ=$user_number;
 
         //查询用户一共答了几道题
         $user_numbers=db("topic_log")->where(["uid"=>$uid,"did"=>$did])->count();

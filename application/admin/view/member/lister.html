@@ -70,6 +70,7 @@
                   <th class="hidden-480">政治学习积分 </th>
                   <th class="hidden-480">单位名称</th> 
                   <th class="hidden-480">政治面貌</th>
+                  <th class="hidden-480">真实姓名</th>
                   <th class="hidden-480">认证状态</th> 
                   <th class="hidden-480">注册时间</th>
                   <th style="border-right:#ddd solid 1px;">操作</th>
@@ -94,6 +95,9 @@
                   <td>
                     {$v.job}
                   </td>
+                  <td>
+                      {$v.username}
+                    </td>
                   <td>
                     {if condition="$v.status eq 0"}未认证{/if}
                     {if condition="$v.status eq 1"}认证中{/if}

@@ -14,7 +14,7 @@ class Member extends BaseAdmin
         if($keywords){
            
             if($keywords){
-                $map['phone|company']=['like','%'.$keywords.'%'];
+                $map['phone|company|username']=['like','%'.$keywords.'%'];
             }
         }else{
             $map=[];

@@ -295,8 +295,12 @@ class User extends BaseHome
         $uid=Request::instance()->header("uid");
 
         $ranking="暂无排名";
+
+        $users=db("user")->where(["uid"=>$uid])->find();
+
+        $company=$users['company'];
        
-        $res=db("user")->where("status",2)->field("username,integ,uid")->order("integ desc")->select();
+        $res=db("user")->where(["status"=>2,"company"=>$company])->field("username,integ,uid")->order("integ desc")->select();
 
         foreach($res as $k => $v){
             if($v['uid'] == $uid){
@@ -305,7 +309,7 @@ class User extends BaseHome
         }
 
         //党员排名
-        $party=db("user")->where("status",2)->where("job","党员")->field("username,polit_integ as integ,uid")->order("polit_integ desc")->select();
+        $party=db("user")->where("status",2)->where(["job"=>"党员","company"=>$company])->field("username,polit_integ as integ,uid")->order("polit_integ desc")->select();
 
         $user=db("user")->where(["uid"=>$uid,"job"=>"党员"])->find();
 
@@ -940,6 +944,49 @@ class User extends BaseHome
         echo json_encode($arr);
 
     }
+
+    /**
+    * 生成题库
+    *
+    * @return void
+    */
+    public function create($id)
+    {
+        $num = 100;    //需要抽取的默认条数
+        $table = 'analog_topic';    //需要抽取的数据表
+        $countcus = db($table)->where("aid",$id)->count();    //获取总记录数
+        $min = db($table)->where("aid",$id)->min('id');    //统计某个字段最小数据
+        $max = db($table)->where("aid",$id)->max('id');
+        if($countcus < $num){$num = $countcus;}
+            $i = 1;
+            $flag = 0;
+            $ary = array();
+            while($i<=$num){
+                $rundnum = rand($min, $max);//抽取随机数
+                if($flag != $rundnum){
+                    //过滤重复 
+                    if(!in_array($rundnum,$ary)){
+                        $re = db($table)->field("id")->where("aid",$id)->where(["id"=>$rundnum])->find();
+                        if($re){
+                            $ary[] = $rundnum;
+                            $flag = $rundnum;
+                        }else{
+                            $i--;
+                        }
+                       
+                    }else{
+                        $i--;
+                    }
+                    $i++;
+                }
+            }
+        $list = db($table)->field("id")->where("aid",$id)->where(["id"=>["in",$ary]])->select();
+
+        $tid=array_column($list,'id');
+
+        return $tid;
+    }
+
     /**
     * 模拟练习题库
     *
@@ -958,7 +1005,23 @@ class User extends BaseHome
 
         if($re['status'] == 1){
 
-            $list=db("analog_topic")->where(["aid"=>$id])->order(["sort asc","id desc"])->limit("0,100")->select();
+            $user_analog=db("analog_user")->where(["uid"=>$uid,"aid"=>$id])->find();
+
+            if($user_analog){
+                $tid=\explode(",",$user_analog['tid']);
+            }else{
+                $tid=$this->create($id);
+
+                $user['aid']=$id;
+                $user['uid']=$uid;
+                $user['tid']=implode(",",$tid);
+
+                db("analog_user")->insert($user);
+            }
+
+            $list=db("analog_topic")->where(["aid"=>$id])->where("id","in",$tid)->order(["sort asc","id desc"])->select();
+
+        //    var_dump($list);exit;
 
             foreach($list as $k => $v){
                 $list[$k]['option']=explode(",",$v['option']);
@@ -1219,7 +1282,7 @@ class User extends BaseHome
 
         $re=db("analog_log")->field("id,grade,time")->where(["uid"=>$uid,"aid"=>$aid])->find();
 
-        $re['title']=db("analog_topic")->where("id",$aid)->find()['title'];
+        $re['title']=db("analog")->where("id",$aid)->find()['title'];
 
         if($re){
             $arr=[
@@ -1247,8 +1310,12 @@ class User extends BaseHome
 
         $aid=input("aid");
 
+        $user_analog=db("analog_user")->where(["uid"=>$uid,"aid"=>$aid])->find();
+
+        $tid=explode(",",$user_analog['tid']);
+
         //题目列表
-        $list=db("analog_topic")->where(["aid"=>$aid])->order(["sort asc","id asc"])->select();
+        $list=db("analog_topic")->where(["aid"=>$aid])->where("id","in",$tid)->order(["sort asc","id desc"])->select();
 
         foreach($list as $k => $v){
             $list[$k]['option']=explode(",",$v['option']);
@@ -1273,6 +1340,60 @@ class User extends BaseHome
 
         echo json_encode($arr);
 
+    }
+    /**
+    * 答题卡
+    *
+    * @return void
+    */
+    public function card()
+    {
+        $uid=Request::instance()->header("uid");
+
+        $aid=input("aid");
+
+        $type=input("type");
+        // 1 每日答题 2政治学习 3模拟练习
+        if($type == 1){
+            $re=db("topic_day")->where("id",$aid)->find();
+
+            $tid=$re['tid'];
+
+            $tids=explode(",",$tid);
+
+            $res=db("topic_log")->field("type")->where(["uid"=>$uid,"tid"=>['in',$tids]])->select();
+
+           // var_dump($res);
+        }
+        if($type == 2){
+            $re=db("study")->where("id",$aid)->find();
+
+            $tid=$re['tid'];
+
+            $tids=explode(",",$tid);
+
+            $res=db("study_logs")->field("type")->where(["uid"=>$uid,"tid"=>['in',$tids]])->select();
+
+           // var_dump($res);
+        }
+        if($type == 3){
+            $re=db("analog_user")->where(["aid"=>$aid,"uid"=>$uid])->find();
+
+            $tid=$re['tid'];
+
+            $tids=explode(",",$tid);
+
+            $res=db("analog_topic_log")->field("type")->where(["uid"=>$uid,"tid"=>['in',$tids]])->select();
+
+           // var_dump($res);
+        }
+        $arr=[
+            'error_code'=>0,
+            'msg'=>'获取成功',
+            'data'=>$res
+        ]; 
+
+        echo json_encode($arr);
     }
 
 

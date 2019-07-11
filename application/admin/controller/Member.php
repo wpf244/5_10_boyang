@@ -173,7 +173,18 @@ class Member extends BaseAdmin
    
     public function ident()
     {
-        $list=db("user")->where(["status"=>1])->order(["apply_time asc"])->paginate(20);
+        $title=input("title");
+
+        $map=[];
+
+        if($title){
+            $map['username|company']=['like',"%".$title."%"];
+        }else{
+            $title='';
+        }
+        $this->assign("title",$title);
+        
+        $list=db("user")->where(["status"=>1])->where($map)->order(["apply_time asc"])->paginate(20,false,["query"=>request()->param()]);
 
         $this->assign("list",$list);
 
@@ -255,7 +266,18 @@ class Member extends BaseAdmin
     }
     public function ident_apply()
     {
-        $list=db("user")->where(["status"=>2])->order(["apply_time asc"])->paginate(20);
+        $title=input("title");
+
+        $map=[];
+
+        if($title){
+            $map['username|company']=['like',"%".$title."%"];
+        }else{
+            $title='';
+        }
+        $this->assign("title",$title);
+        
+        $list=db("user")->where(["status"=>2])->where($map)->order(["apply_time asc"])->paginate(20,false,["query"=>request()->param()]);
 
         $this->assign("list",$list);
 
@@ -267,7 +289,18 @@ class Member extends BaseAdmin
     }
     public function ident_bo()
     {
-        $list=db("user")->where(["status"=>3])->order(["apply_time asc"])->paginate(20);
+        $title=input("title");
+
+        $map=[];
+
+        if($title){
+            $map['username|company']=['like',"%".$title."%"];
+        }else{
+            $title='';
+        }
+        $this->assign("title",$title);
+
+        $list=db("user")->where(["status"=>3])->where($map)->order(["apply_time asc"])->paginate(20,false,["query"=>request()->param()]);
 
         $this->assign("list",$list);
 

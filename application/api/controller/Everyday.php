@@ -93,6 +93,22 @@ class Everyday extends  BaseApi
         echo json_encode($arr);
     }
     /**
+    * 每日答题工种列表
+    *
+    * @return void
+    */
+    public function listers()
+    {
+        $res=db("topic_lister")->order(["sort asc","id desc"])->select();
+
+        $arr=[
+            'error_code'=>0,
+            'msg'=>'获取成功',
+            'data'=>$res
+        ]; 
+        echo json_encode($arr);
+    }
+    /**
     * 答题列表
     *
     * @return void
@@ -101,9 +117,11 @@ class Everyday extends  BaseApi
     {
         $id=input("id");
 
-        $re=db("topic_day")->where(["id"=>$id])->find();
+        $re=db("topic_day")->where(["lid"=>$id])->whereTime('time', 'd')->find();
 
         $tid=$re['tid'];
+
+        $did=$re['id'];
 
         $tids=\explode(",",$tid);
 
@@ -115,9 +133,9 @@ class Everyday extends  BaseApi
 
         $uid=Request::instance()->header("uid");
 
-        $num=db("topic_log")->where(["uid"=>$uid,"did"=>$id])->count();
+        $num=db("topic_log")->where(["uid"=>$uid,"did"=>$did])->count();
 
-        $log=db("topic_day_log")->where(["uid"=>$uid,"did"=>$id])->find();
+        $log=db("topic_day_log")->where(["uid"=>$uid,"did"=>$did])->find();
 
         if($log){
             $num=0;
@@ -149,18 +167,15 @@ class Everyday extends  BaseApi
 
         $sid=$re['id'];
 
+        $num=db("study_logs")->where(["uid"=>$uid,"sid"=>$sid])->count();
+
         $log=db("study_log")->where(["uid"=>$uid,"sid"=>$sid])->find();
 
         if($log){
+            $num=0;
+        }
 
-            $arr=[
-                'error_code'=>1,
-                'msg'=>'今天已经做过了,明天再来吧',
-                'data'=>[]
-            ]; 
-        }else{
-          
-            $tid=$re['tid'];
+        $tid=$re['tid'];
 
             $tids=\explode(",",$tid);
 
@@ -176,11 +191,41 @@ class Everyday extends  BaseApi
                 'data'=>[
                     'sid'=>$sid,
                     'title'=>$re['title'],
+                    'num'=>$num,
                     'list'=>$list,
                 ]
             ]; 
 
-        }
+        // if($log){
+
+        //     $arr=[
+        //         'error_code'=>1,
+        //         'msg'=>'今天已经做过了,明天再来吧',
+        //         'data'=>[]
+        //     ]; 
+        // }else{
+          
+        //     $tid=$re['tid'];
+
+        //     $tids=\explode(",",$tid);
+
+        //     $list=db("topic")->where(["id"=>["in",$tids]])->where("types",1)->select();
+
+        //     foreach($list as $k => $v){
+        //         $list[$k]['option']=explode(",",$v['option']);
+        //     }
+
+        //     $arr=[
+        //         'error_code'=>0,
+        //         'msg'=>'获取成功',
+        //         'data'=>[
+        //             'sid'=>$sid,
+        //             'title'=>$re['title'],
+        //             'list'=>$list,
+        //         ]
+        //     ]; 
+
+        // }
 
         echo json_encode($arr);
     }
@@ -367,6 +412,8 @@ class Everyday extends  BaseApi
 
         $did=input("did");
 
+        // var_dump($did,$uid);exit;
+
         //查询正确几题以上给积分
         $lb=db("lb")->where("fid",7)->find();
 
@@ -386,6 +433,7 @@ class Everyday extends  BaseApi
         $user_numbers=db("topic_log")->where(["uid"=>$uid,"did"=>$did])->count();
 
         //正确率
+        
         $acc=$user_number/$user_numbers;
 
         $data['number']=\intval($acc*5);
@@ -446,8 +494,8 @@ class Everyday extends  BaseApi
             }
         }else{
             $arr=[
-                'error_code'=>2,
-                'msg'=>'每天只能答题一次',
+                'error_code'=>0,
+                'msg'=>'提交成功',
                 'data'=>[]
             ]; 
         }
@@ -532,8 +580,8 @@ class Everyday extends  BaseApi
             }
         }else{
             $arr=[
-                'error_code'=>2,
-                'msg'=>'每天只能答题一次',
+                'error_code'=>0,
+                'msg'=>'提交成功',
                 'data'=>[]
             ]; 
         }

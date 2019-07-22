@@ -363,41 +363,72 @@ class Integ extends BaseAdmin
         $this->assign("end",$end);
         
 
-        $list=db("company")->order(["cid desc"])->paginate(20)->each(function($k,$v){
-              $user=db("user")->field("uid")->where("status",2)->where(["company_id"=>$k['cid']])->select();
+        // $list=db("company")->order(["cid desc"])->paginate(20)->each(function($k,$v){
+        //       $user=db("user")->field("uid")->where("status",2)->where(["company_id"=>$k['cid']])->select();
               
-              $arr=array();
-              foreach($user as $vs){
-                $arr[]=$vs['uid'];
-              }
+        //       $arr=array();
+        //       foreach($user as $vs){
+        //         $arr[]=$vs['uid'];
+        //       }
 
-              $start=input('start');
-              $end=input('end');
+        //       $start=input('start');
+        //       $end=input('end');
             
-             if($start){
-                $integ=db("integ_log")->where(["uid"=>["in",$arr],"type"=>1])->whereTime('time', 'between', [$start, $end])->sum("integ");
-             }else{
-                $integ=db("integ_log")->where(["uid"=>["in",$arr],"type"=>1])->whereTime("time","m")->sum("integ");
-             }
+        //      if($start){
+        //         $integ=db("integ_log")->where(["uid"=>["in",$arr],"type"=>1])->whereTime('time', 'between', [$start, $end])->sum("integ");
+        //      }else{
+        //         $integ=db("integ_log")->where(["uid"=>["in",$arr],"type"=>1])->whereTime("time","m")->sum("integ");
+        //      }
 
-         //     $integ=db("integ_log")->where(["uid"=>["in",$arr],"type"=>1])->whereTime("time","m")->sum("integ");
+        //  //     $integ=db("integ_log")->where(["uid"=>["in",$arr],"type"=>1])->whereTime("time","m")->sum("integ");
 
-              $k['integ']=$integ;
+        //       $k['integ']=$integ;
 
-              return $k;
-        });
+        //       return $k;
+        // });
 
-        $page=$list->render();
+        // $page=$list->render();
 
     
-        $this->assign("page",$page);
+        // $this->assign("page",$page);
 
-        $list=$list->toArray();
+        // $list=$list->toArray();
+
+        $list=db("company")->order(["cid desc"])->select();
+        foreach($list as  &$v ){
+            $user=db("user")->field("uid")->where("status",2)->where(["company_id"=>$v['cid']])->select();
+            
+            $arr=array();
+            foreach($user as $vs){
+              $arr[]=$vs['uid'];
+            }
+
+            $start=input('start');
+            $end=input('end');
+          
+           if($start){
+              $integ=db("integ_log")->where(["uid"=>["in",$arr],"type"=>1])->whereTime('time', 'between', [$start, $end])->sum("integ");
+           }else{
+              $integ=db("integ_log")->where(["uid"=>["in",$arr],"type"=>1])->whereTime("time","m")->sum("integ");
+           }
+
+       //     $integ=db("integ_log")->where(["uid"=>["in",$arr],"type"=>1])->whereTime("time","m")->sum("integ");
+
+            $v['integ']=$integ;
+
+            
+      }
+
+        
      
-        $last_names = array_column($list['data'],'integ');
-        array_multisort($last_names,SORT_DESC,$list['data']);
+        $last_names = array_column($list,'integ');
+        array_multisort($last_names,SORT_DESC,$list);
 
-        $this->assign("list",$list['data']);
+        $this->assign("list",$list);
+
+        // $page=$list->paginate(20);
+
+        // $this->assign("page",$page);
 
 
         return $this->fetch();
@@ -501,51 +532,82 @@ class Integ extends BaseAdmin
         $this->assign("start",$start);
         $this->assign("end",$end);
 
-        $list=db("company")->order(["cid desc"])->paginate(20)->each(function($k,$v){
-              $user=db("user")->field("uid")->where("status",2)->where(["company_id"=>$k['cid']])->select();
+        // $list=db("company")->order(["cid desc"])->paginate(20)->each(function($k,$v){
+        //       $user=db("user")->field("uid")->where("status",2)->where(["company_id"=>$k['cid']])->select();
+              
+        //       $arr=array();
+        //       foreach($user as $vs){
+        //         $arr[]=$vs['uid'];
+        //       }
+
+        //       $start=input('start');
+        //       $end=input('end');
+            
+        //      if($start){
+        //         $integ=db("integ_log")->where(["uid"=>["in",$arr],"type"=>1])->whereTime('time', 'between', [$start, $end])->sum("integ");
+        //      }else{
+        //         $integ=db("integ_log")->where(["uid"=>["in",$arr],"type"=>1])->whereTime("time","m")->sum("integ");
+        //      }
+
+        //     //  $integ=db("integ_log")->where(["uid"=>["in",$arr],"type"=>1])->whereTime("time","m")->sum("integ");
+
+        //       $cou=count($user);
+
+        //       if($integ == 0 || $cou == 0){
+        //           $avg=0;
+        //       }else{
+        //         $avg=intval($integ/$cou);
+        //       }
+
+              
+
+        //       $k['integ']=$avg;
+
+        //       return $k;
+        // });
+
+        // $page=$list->render();
+
+    
+        // $this->assign("page",$page);
+
+        // $list=$list->toArray();
+
+        $list=db("company")->order(["cid desc"])->select();
+
+        foreach($list as $ks => $vs ){
+            $user=db("user")->field("uid")->where("status",2)->where(["company_id"=>$vs['cid']])->select();
               
               $arr=array();
               foreach($user as $vs){
                 $arr[]=$vs['uid'];
               }
 
-              $start=input('start');
-              $end=input('end');
+             
             
              if($start){
                 $integ=db("integ_log")->where(["uid"=>["in",$arr],"type"=>1])->whereTime('time', 'between', [$start, $end])->sum("integ");
              }else{
                 $integ=db("integ_log")->where(["uid"=>["in",$arr],"type"=>1])->whereTime("time","m")->sum("integ");
              }
-
-            //  $integ=db("integ_log")->where(["uid"=>["in",$arr],"type"=>1])->whereTime("time","m")->sum("integ");
+             // $integ=db("integ_log")->where(["uid"=>["in",$arr],"type"=>1])->whereTime("time","m")->sum("integ");
 
               $cou=count($user);
 
               if($integ == 0 || $cou == 0){
-                  $avg=0;
-              }else{
-                $avg=intval($integ/$cou);
-              }
+                $avg=0.00;
+                }else{
+                $avg=sprintf("%.2f",($integ/$cou));
+                }
 
-              
+              $list[$ks]['integ']=$avg;
 
-              $k['integ']=$avg;
-
-              return $k;
-        });
-
-        $page=$list->render();
-
-    
-        $this->assign("page",$page);
-
-        $list=$list->toArray();
+        }
      
-        $last_names = array_column($list['data'],'integ');
-        array_multisort($last_names,SORT_DESC,$list['data']);
+        $last_names = array_column($list,'integ');
+        array_multisort($last_names,SORT_DESC,$list);
 
-        $this->assign("list",$list['data']);
+        $this->assign("list",$list);
 
 
         return $this->fetch();
@@ -576,9 +638,9 @@ class Integ extends BaseAdmin
               $cou=count($user);
 
               if($integ == 0 || $cou == 0){
-                $avg=0;
+                $avg=0.00;
                 }else{
-                $avg=intval($integ/$cou);
+                    $avg=sprintf("%.2f",($integ/$cou));
                 }
 
               $list[$ks]['integ']=$avg;

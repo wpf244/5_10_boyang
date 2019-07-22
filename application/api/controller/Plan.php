@@ -50,10 +50,16 @@ class Plan extends Controller
 
        $data['tid']=implode(",",$list);
 
-        $day=db("topic_day")->whereTime("time","d")->find();
+       $lister=db("topic_lister")->select();
+
+       foreach($lister as $k => $v){
+           $lid=$v['id'];
+
+           $day=db("topic_day")->where("lid",$lid)->whereTime("time","d")->find();
 
         if(empty($day)){
             $data['time']=time();
+            $data['lid']=$lid;
             $res=db("topic_day")->insert($data);
 
             if($res){
@@ -64,6 +70,10 @@ class Plan extends Controller
         }else{
             echo '今日每日答题题库已生成';
         }
+
+       }
+
+        
 
         //更新模拟练习过期
         $list=db("analog")->where("status",1)->select();
@@ -133,7 +143,7 @@ class Plan extends Controller
                 echo '0';
             }
         }else{
-            echo '今日每日答题题库已生成';
+            echo '今日政治学习题库已生成';
         }
 
 

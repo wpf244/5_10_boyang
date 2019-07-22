@@ -222,7 +222,9 @@ class Topic extends BaseAdmin
     }
     public function everyday()
     {
-        $list = db("topic_day")->order("id desc")->paginate(20);
+        $id=input("id");
+        
+        $list = db("topic_day")->where("lid",$id)->order("id desc")->paginate(20);
 
         $this->assign("list", $list);
 
@@ -471,9 +473,24 @@ class Topic extends BaseAdmin
 
         $this->assign("re", $re);
 
-        $list = db("analog_topic")->where(["aid" => $id])->order("id desc")->select();
+        $title=input("title");
+
+        $map=[];
+
+        if($title){
+            $map['title']=['like',"%".$title."%"];
+        }else{
+            $title='';
+        }
+        $this->assign("title",$title);
+
+        $list = db("analog_topic")->where(["aid" => $id])->where($map)->order("id desc")->paginate(20,false,["query"=>request()->param()]);
 
         $this->assign("list", $list);
+
+        $page=$list->render();
+
+        $this->assign("page",$page);
 
         return $this->fetch();
     }
@@ -571,5 +588,61 @@ class Topic extends BaseAdmin
             db("study")->where("id", $id)->delete();
         }
         $this->redirect('study');
+    }
+    public function index()
+    {
+        $list=db("topic_lister")->order(["sort asc","id desc"])->paginate(20,false,['query'=>request()->param()]);
+
+        $this->assign("list",$list);
+
+        $page=$list->render();
+
+        $this->assign("page",$page);
+        
+        return $this->fetch();
+    }
+    public function save_type(){
+        $id=input('id');
+        if($id){
+            $data=input("post.");
+            
+            $res=db("topic_lister")->where(["id"=>$id])->update($data);
+            if($res){
+                $this->success("修改成功");
+            }else{
+                $this->error("修改失败");
+            }
+        }else{
+            $data=input("post.");
+            
+            $re=db("topic_lister")->insert($data);
+            if($re){
+                $this->success("保存成功");
+            }else{
+                $this->error("保存失败");
+            }
+        }
+    }
+    public function modifyls(){
+        $id=input('id');
+        $re=db('topic_lister')->where("id=$id")->find();
+        
+        echo json_encode($re);
+    }
+    public function sortls(){
+        $data=input('post.');
+       
+        foreach ($data as $id => $sort){
+            db('topic_lister')->where(array('id' => $id ))->setField('sort' , $sort);
+        }
+        $this->redirect('index');
+    }
+    public function delete_type(){
+        $id=input('id');
+       
+        $del=db("topic_lister")->where(["id"=>$id])->delete();
+        $this->redirect('index');
+        
+       
     }
 }

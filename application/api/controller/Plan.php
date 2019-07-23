@@ -15,6 +15,10 @@ class Plan extends Controller
         
         $data['title']=$date."答题";
 
+        $lister=db("topic_lister")->select();
+
+        foreach($lister as $k => $v){
+
         //随机取出10条数据
         $num = 10;    //需要抽取的默认条数
         $table = 'topic';    //需要抽取的数据表
@@ -50,9 +54,9 @@ class Plan extends Controller
 
        $data['tid']=implode(",",$list);
 
-       $lister=db("topic_lister")->select();
+      
 
-       foreach($lister as $k => $v){
+      
            $lid=$v['id'];
 
            $day=db("topic_day")->where("lid",$lid)->whereTime("time","d")->find();

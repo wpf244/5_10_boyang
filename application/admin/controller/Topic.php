@@ -121,6 +121,18 @@ class Topic extends BaseAdmin
         }
         $this->redirect('lister');
     }
+    public function delete_allss()
+    {
+        $id = input('id');
+        $arr = explode(",", $id);
+        foreach ($arr as $v) {
+            $re = db("topic")->where("id", $v)->find();
+            if ($re) {
+                db("topic")->where("id", $v)->delete();
+            }
+        }
+        $this->redirect('index');
+    }
     public function addexcel()
     {
 
@@ -242,21 +254,56 @@ class Topic extends BaseAdmin
     }
     public function look()
     {
+        // $id = input("id");
+
+        // $re = db("topic_day")->where("id", $id)->find();
+
+        // $tid = $re['tid'];
+
+        // $tids = \explode(",", $tid);
+
+        // $list = db("topic")->where(["id" => ["in", $tids]])->select();
+
+        // $this->assign("list", $list);
+
         $id = input("id");
 
-        $re = db("topic_day")->where("id", $id)->find();
+        $re = db("topic_lister")->where("id", $id)->find();
 
-        $tid = $re['tid'];
+        $this->assign("re", $re);
 
-        $tids = \explode(",", $tid);
+        $title=input("title");
 
-        $list = db("topic")->where(["id" => ["in", $tids]])->select();
+        $map=[];
+
+        if($title){
+            $map['title']=['like',"%".$title."%"];
+        }else{
+            $title='';
+        }
+        $this->assign("title",$title);
+
+        
+
+        $list = db("topic")->where(["tid" => $id])->where($map)->order("id desc")->paginate(20,false,["query"=>request()->param()]);
 
         $this->assign("list", $list);
 
+        $page=$list->render();
+
+        $this->assign("page",$page);
+
         return $this->fetch();
     }
-    
+    public function deletet()
+    {
+        $id = input('id');
+        $re = db("topic")->where("id", $id)->find();
+        if ($re) {
+            db("topic")->where("id", $id)->delete();
+        }
+        echo '0';
+    }
     public function save_day()
     {
         $data = input("post.");
@@ -463,6 +510,58 @@ class Topic extends BaseAdmin
             } else {
                 $this->error("导入失败", url('analog'));
             }
+        }else{
+            $this->error("请上传xlsx,xls类型的文件");
+        }
+    }
+    public function maddexcels()
+    {
+
+        vendor("PHPExcel.PHPExcel"); //获取PHPExcel类 
+        $excel = new \PHPExcel();
+
+        $file = request()->file('file');
+        $info = $file->validate(['ext' => 'xlsx,xls,csv'])->move(ROOT_PATH . 'public' . DS . 'uploads');
+
+        $id = input("id");
+
+
+        if ($info) {
+            $exclePath = $info->getSaveName();  //获取文件名  
+            $file_name = ROOT_PATH . 'public' . DS . 'uploads' . DS . $exclePath;   //上传文件的地址  
+
+            //  $objReader =\PHPExcel_IOFactory::createReader('Excel2007');  
+            $obj_PHPExcel = \PHPExcel_IOFactory::load($file_name, $encode = 'utf-8');
+            //   $obj_PHPExcel =$objReader->load($file_name, $encode = 'utf-8');  //加载文件内容,编码utf-8  
+            //   echo "<pre>";  
+            $excel_array = $obj_PHPExcel->getsheet(0)->toArray();   //转换为数组格式  
+            // array_shift($excel_array);  //删除第一个数组(标题);  
+            $arr  = reset($excel_array);
+            unset($excel_array[0]);
+            $data = [];
+            $i = 0;
+            foreach ($excel_array as $k => $v) {
+                if (trim($v[0]) != '') {
+                    $data[$k]['tid'] = $id;
+                    $data[$k][trim($arr[0])] = $v[0];
+                    $data[$k][trim($arr[1])] = $v[1];
+                    $data[$k][trim($arr[2])] = $v[2];
+                    $data[$k][trim($arr[3])] = $v[3];
+                    $data[$k][trim($arr[4])] = $v[4];
+                }
+
+                $i++;
+            }
+            //   var_dump($data);exit;
+            $res = db("topic")->insertAll($data);
+
+            if ($res) {
+                $this->success("导入成功", url('index'));
+            } else {
+                $this->error("导入失败", url('index'));
+            }
+        }else{
+            $this->error("请上传xlsx,xls类型的文件");
         }
     }
     public function looks()

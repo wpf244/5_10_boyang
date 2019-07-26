@@ -64,8 +64,11 @@
                   <td class="hidden-480"><input class="input-small" type="number" name="{$v.id}" value="{$v.sort}"></td>
                   <td>{$v.title}</td>
                   <td>
-                  <a class="btn btn-xs btn-info" href="{:url('everyday',array('id'=>$v['id']))}">
+                  <a class="btn btn-xs btn-info" href="{:url('look',array('id'=>$v['id']))}">
                     查看题库
+                  </a>
+                  <a class="btn btn-xs btn-infos" data-id="{$v.id}" data-toggle="modal" data-target="#adds" >
+                    导入题库
                   </a>
                 </td>
                   <td>
@@ -127,6 +130,37 @@
     </div>
   </div>
 
+  <div class="modal fade" id="adds" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+          aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">添加</h4>
+        </div>
+  <form id="logoForm" class="form-horizontal" action="{:url('Topic/maddexcels')}" method="post" enctype="multipart/form-data">
+        
+        <div class="modal-body">
+
+            <div class="form-group">
+              <label class="col-sm-2 control-label no-padding-right" for="">文件</label>
+              <div class="col-xs-8">
+                <input multiple="" type="file" name="file" required />
+              
+              </div>
+            </div>
+           <input name="id" id="ids" type="hidden" value="" />
+        
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+          <button  type="submit" class="btn btn-primary">保存</button>
+        </div>
+         </form>
+      </div>
+    </div>
+  </div>
+
 {include file="public:footer"}
 
 <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
@@ -147,6 +181,12 @@
     });
 
   })
+
+  $(".btn-infos").click(function(){
+      var id = $(this).data("id");
+
+      $("#ids").val(id);
+   })
 </script>
 <script>
 $(function(){
@@ -178,6 +218,35 @@ $(function(){
 	}
  
 });
+
+$('#logoForm').ajaxForm({
+		beforeSubmit: checkForm, // 此方法主要是提交前执行的方法，根据需要设置
+		success: complete, // 这是提交后的方法
+		dataType: 'json'
+	});
+	
+	function checkForm(){
+	  
+		
+    }
+
+	function complete(data){
+		if(data.code==1){
+			layer.alert(data.msg, {icon: 6}, function(index){
+ 			layer.close(index);
+ 			window.location.href=data.url;
+			});
+			
+		}else{
+			layer.alert(data.msg, {icon: 5}, function(index){
+ 			layer.close(index);
+ 			window.location.href=data.url;
+			});
+			
+		}
+	}
+ 
+
 
 </script>
 <script type="text/javascript">

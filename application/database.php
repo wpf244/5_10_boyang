@@ -13,13 +13,13 @@ return [
     // 数据库类型
     'type'            => 'mysql',
     // 服务器地址
-    'hostname'        => '127.0.0.1',
+    'hostname'        => '47.105.198.111',
     // 数据库名
-    'database'        => '5_10_boyang',
+    'database'        => 'boyang_dd371_com',
     // 用户名
-    'username'        => 'root',
+    'username'        => 'boyang_dd371_com',
     // 密码
-    'password'        => 'root',
+    'password'        => 'KTNHNsAdRp5CNDtA',
     // 端口
     'hostport'        => '3306',
     // 连接dsn

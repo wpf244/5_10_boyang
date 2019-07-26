@@ -115,17 +115,38 @@ class Everyday extends  BaseApi
     */
     public function lister()
     {
+        $uid=Request::instance()->header("uid");
+        
         $id=input("id");
 
-        $re=db("topic_day")->where(["lid"=>$id])->whereTime('time', 'd')->find();
+        $re=db("topic_lister")->where(["id"=>$id])->find();
 
-        $tid=$re['tid'];
+        // $tid=$re['tid'];
 
-        $did=$re['id'];
+        // $did=$re['id'];
 
-        $tids=\explode(",",$tid);
+        // $tids=\explode(",",$tid);
 
-        $list=db("topic")->where(["id"=>["in",$tids]])->select();
+        $user_analog=db("topic_user")->where(["uid"=>$uid,"aid"=>$id])->whereTime("time","d")->find();
+
+            if($user_analog){
+                $tid=\explode(",",$user_analog['tid']);
+
+                
+            }else{
+                $tid=$this->create($id);
+
+                $user['aid']=$id;
+                $user['uid']=$uid;
+                $user['time']=time();
+                $user['tid']=implode(",",$tid);
+
+                db("topic_user")->insert($user);
+
+               
+            }
+
+        $list=db("topic")->where(["id"=>["in",$tid]])->select();
 
         foreach($list as $k => $v){
             $list[$k]['option']=explode(",",$v['option']);
@@ -133,9 +154,11 @@ class Everyday extends  BaseApi
 
         $uid=Request::instance()->header("uid");
 
-        $num=db("topic_log")->where(["uid"=>$uid,"did"=>$did])->count();
+        $num=db("topic_log")->where(["uid"=>$uid,"did"=>$id])->count();
 
-        $log=db("topic_day_log")->where(["uid"=>$uid,"did"=>$did])->find();
+        // var_dump($num);exit;
+
+        $log=db("topic_day_log")->where(["uid"=>$uid,"did"=>$id])->find();
 
         if($log){
             $num=0;
@@ -153,6 +176,47 @@ class Everyday extends  BaseApi
             ]
         ]; 
         echo json_encode($arr);
+    }
+    /**
+    * 生成题库
+    *
+    * @return void
+    */
+    public function create($id)
+    {
+        $num = 10;    //需要抽取的默认条数
+        $table = 'topic';    //需要抽取的数据表
+        $countcus = db($table)->where("tid",$id)->count();    //获取总记录数
+        $min = db($table)->where("tid",$id)->min('id');    //统计某个字段最小数据
+        $max = db($table)->where("tid",$id)->max('id');
+        if($countcus < $num){$num = $countcus;}
+            $i = 1;
+            $flag = 0;
+            $ary = array();
+            while($i<=$num){
+                $rundnum = rand($min, $max);//抽取随机数
+                if($flag != $rundnum){
+                    //过滤重复 
+                    if(!in_array($rundnum,$ary)){
+                        $re = db($table)->field("id")->where("tid",$id)->where(["id"=>$rundnum])->find();
+                        if($re){
+                            $ary[] = $rundnum;
+                            $flag = $rundnum;
+                        }else{
+                            $i--;
+                        }
+                       
+                    }else{
+                        $i--;
+                    }
+                    $i++;
+                }
+            }
+        $list = db($table)->field("id")->where("tid",$id)->where(["id"=>["in",$ary]])->select();
+
+        $tid=array_column($list,'id');
+
+        return $tid;
     }
     /**
     * 政治学习列表
@@ -600,7 +664,7 @@ class Everyday extends  BaseApi
 
         $re=db("topic_day_log")->where(["uid"=>$uid])->whereTime("time","d")->find();
 
-        $re['title']=db("topic_day")->where("id",$re['did'])->find()['title'];
+        $re['title']=db("topic_lister")->where("id",$re['did'])->find()['title'];
 
         if($re){
             $arr=[

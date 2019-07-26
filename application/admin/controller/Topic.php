@@ -690,7 +690,19 @@ class Topic extends BaseAdmin
     }
     public function index()
     {
-        $list=db("topic_lister")->order(["sort asc","id desc"])->paginate(20,false,['query'=>request()->param()]);
+        
+        $title=input("title");
+
+        $map=[];
+
+        if($title){
+            $map['title']=['like',"%".$title."%"];
+        }else{
+            $title='';
+        }
+        $this->assign("title",$title);
+        
+        $list=db("topic_lister")->where($map)->order(["sort asc","id desc"])->paginate(20,false,['query'=>request()->param()]);
 
         $this->assign("list",$list);
 

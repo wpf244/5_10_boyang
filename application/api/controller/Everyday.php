@@ -132,7 +132,7 @@ class Everyday extends  BaseApi
             if($user_analog){
                 $tid=\explode(",",$user_analog['tid']);
 
-                
+                $did=$user_analog['id'];
             }else{
                 $tid=$this->create($id);
 
@@ -143,7 +143,7 @@ class Everyday extends  BaseApi
 
                 db("topic_user")->insert($user);
 
-               
+                $did=db("topic_user")->getLastInsID();
             }
 
         $list=db("topic")->where(["id"=>["in",$tid]])->select();
@@ -173,6 +173,7 @@ class Everyday extends  BaseApi
                 'title'=>$re['title'],
                 'num'=>$num,
                 'list'=>$list,
+                'did'=>$did,
             ]
         ]; 
         echo json_encode($arr);
@@ -664,7 +665,9 @@ class Everyday extends  BaseApi
 
         $re=db("topic_day_log")->where(["uid"=>$uid])->whereTime("time","d")->find();
 
-        $re['title']=db("topic_lister")->where("id",$re['did'])->find()['title'];
+        $user=db("topic_user")->where("id",$re['did'])->find();
+
+        $re['title']=db("topic_lister")->where("id",$user['aid'])->find()['title'];
 
         if($re){
             $arr=[
